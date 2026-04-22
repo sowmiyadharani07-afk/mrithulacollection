@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mrithula Collection – Luxury Fashion</title>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #e63946;
+      --primary-dark: #c1121f;
+      --primary-light: #ff6b6b;
+      --accent: #f4a261;
+      --accent2: #2ec4b6;
+      --black: #0d0d0d;
+      --dark: #1a1a2e;
+      --dark2: #16213e;
+      --mid: #6b7280;
+      --light: #f0f4ff;
+      --white: #ffffff;
+      --cream: #fafbff;
+      --border: rgba(230,57,70,0.2);
+      --font-head: 'League Spartan', sans-serif;
+      --font-body: 'Poppins', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); color: var(--dark); background: var(--cream); overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    ul { list-style: none; }
+    button { cursor: pointer; border: none; background: none; font-family: var(--font-body); }
+
+    /* ══════════════════════════════════
+       ANNOUNCEMENT BAR
+    ══════════════════════════════════ */
+    .announce-bar {
+      background: var(--primary); color: rgba(255,255,255,0.92);
+      font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+      text-align: center; padding: 9px 20px; font-weight: 500;
+      font-family: var(--font-body);
+    }
+    .announce-bar b { color: var(--white); font-weight: 700; }
+
+    /* ══════════════════════════════════
+       HEADER / NAV
+    ══════════════════════════════════ */
+    header {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--dark); border-bottom: 2px solid var(--primary);
+    }
+    .header-inner {
+      max-width: 1300px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 68px;
+    }
+    .logo { display: flex; flex-direction: column; align-items: center; }
+    .logo-name {
+      font-family: var(--font-head); font-size: 22px; font-weight: 800;
+      color: var(--white); letter-spacing: 3px; text-transform: uppercase; line-height: 1;
+    }
+    .logo-tag { font-size: 8px; letter-spacing: 4px; color: var(--accent); text-transform: uppercase; font-weight: 500; font-family: var(--font-body); }
+
+    .nav { display: flex; align-items: center; }
+    .nav a {
+      color: rgba(255,255,255,0.75); font-size: 11px; letter-spacing: 1px;
+      text-transform: uppercase; font-weight: 600; padding: 24px 14px;
+      transition: color .3s; position: relative; font-family: var(--font-head);
+    }
+    .nav a::after {
+      content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+      width:0; height:2px; background:var(--primary); transition:width .3s;
+    }
+    .nav a:hover, .nav a.active { color: var(--primary-light); }
+    .nav a:hover::after, .nav a.active::after { width: 70%; }
+    .nav a.sale-link { color: var(--accent); font-weight: 700; }
+
+    .hicons { display: flex; align-items: center; gap: 18px; }
+    .hicon { color: rgba(255,255,255,0.75); font-size: 16px; transition: color .3s; position: relative; cursor: pointer; }
+    .hicon:hover { color: var(--primary-light); }
+    .hicon .badge {
+      position:absolute; top:-6px; right:-6px; background:var(--primary); color:var(--white);
+      font-size:8px; font-weight:700; width:15px; height:15px;
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+    }
+    .ham { display:none; color:rgba(255,255,255,0.8); font-size:20px; }
+
+    /* ══════════════════════════════════
+       SECTION: HOME (HERO SLIDER)
+    ══════════════════════════════════ */
+    #home { position:relative; height:92vh; min-height:580px; overflow:hidden; background:var(--dark); }
+    .slides-wrap { display:flex; height:100%; transition:transform .9s cubic-bezier(.77,0,.18,1); }
+    .slide { min-width:100%; height:100%; position:relative; display:flex; align-items:center; }
+    .slide-bg {
+      position:absolute; inset:0; background-size:cover; background-position:center;
+      opacity:.45; transition:transform 8s linear;
+    }
+    .slide::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(120deg,rgba(13,13,13,.85) 0%,rgba(13,13,13,.2) 60%,rgba(13,13,13,.6) 100%);
+      z-index:1;
+    }
+    .slide-body { position:relative; z-index:2; padding:0 100px; max-width:700px; }
+    .slide-kicker { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+    .slide-kicker .kline { width:36px; height:2px; background:var(--primary); border-radius:2px; }
+    .slide-kicker span { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--primary-light); font-weight:600; font-family:var(--font-body); }
+    .slide-body h1 {
+      font-family:var(--font-head); font-size:clamp(42px,6vw,78px);
+      font-weight:900; color:var(--white); line-height:1.0; margin-bottom:18px; letter-spacing:-1px;
+    }
+    .slide-body h1 em { font-style:normal; color:var(--primary-light); }
+    .slide-body p { font-size:14px; color:rgba(255,255,255,.7); letter-spacing:.3px; margin-bottom:36px; line-height:1.8; font-weight:300; max-width:440px; font-family:var(--font-body); }
+    .slide-cta { display:flex; gap:14px; flex-wrap:wrap; }
+    .btn-gold {
+      background:var(--primary); color:var(--white);
+      padding:14px 34px; font-size:11px; letter-spacing:2px;
+      text-transform:uppercase; font-weight:700; transition:all .3s; display:inline-block;
+      font-family:var(--font-head); border-radius:3px;
+    }
+    .btn-gold:hover { background:var(--primary-dark); transform:translateY(-2px); box-shadow:0 8px 24px rgba(230,57,70,.4); }
+    .btn-ghost {
+      border:2px solid rgba(255,255,255,.5); color:var(--white);
+      padding:12px 32px; font-size:11px; letter-spacing:2px;
+      text-transform:uppercase; font-weight:600; transition:all .3s; display:inline-block;
+      font-family:var(--font-head); border-radius:3px;
+    }
+    .btn-ghost:hover { border-color:var(--primary-light); color:var(--primary-light); }
+
+    .sprev, .snext {
+      position:absolute; top:50%; transform:translateY(-50%); z-index:10;
+      color:rgba(255,255,255,.7); width:48px; height:48px;
+      border:2px solid rgba(255,255,255,.25); display:flex; align-items:center;
+      justify-content:center; transition:all .3s; font-size:14px; border-radius:3px;
+    }
+    .sprev { left:36px; } .snext { right:36px; }
+    .sprev:hover, .snext:hover { border-color:var(--primary); color:var(--primary-light); background:rgba(230,57,70,.15); }
+    .sdots { position:absolute; bottom:36px; left:100px; z-index:10; display:flex; gap:10px; }
+    .sdot { width:20px; height:2px; background:rgba(255,255,255,.3); transition:all .3s; cursor:pointer; border-radius:2px; }
+    .sdot.on { width:44px; background:var(--primary); }
+
+    /* ══════════════════════════════════
+       MARQUEE
+    ══════════════════════════════════ */
+    .marquee { background:var(--dark); overflow:hidden; padding:13px 0; border-top:2px solid var(--primary); border-bottom:2px solid var(--primary); }
+    .mtrack { display:flex; animation:mscroll 22s linear infinite; width:max-content; }
+    .mitem { display:flex; align-items:center; gap:16px; padding:0 28px; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.85); font-weight:600; white-space:nowrap; font-family:var(--font-body); }
+    .mitem i { font-size:10px; color:var(--primary); }
+    @keyframes mscroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    /* ══════════════════════════════════
+       SECTION: CATEGORIES
+    ══════════════════════════════════ */
+    #categories { padding:90px 40px; background:var(--cream); }
+    .sec-label { display:flex; align-items:center; gap:14px; margin-bottom:10px; }
+    .sec-label .ln { width:28px; height:3px; background:var(--primary); border-radius:2px; }
+    .sec-label span { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--primary); font-weight:600; font-family:var(--font-body); }
+    .sec-title { font-family:var(--font-head); font-size:clamp(28px,4vw,48px); font-weight:800; color:var(--dark); margin-bottom:44px; letter-spacing:-0.5px; }
+    .sec-title em { font-style:normal; color:var(--primary); }
+
+    .cat-grid { display:grid; grid-template-columns:1.6fr 1fr 1fr; grid-template-rows:290px 290px; gap:14px; }
+    .cat-card { position:relative; overflow:hidden; cursor:pointer; display:flex; align-items:flex-end; border-radius:6px; }
+    .cat-card:first-child { grid-row:span 2; }
+    .cat-bg { position:absolute; inset:0; background-size:cover; background-position:center; transition:transform .6s ease; filter:brightness(.65); }
+    .cat-card:hover .cat-bg { transform:scale(1.06); filter:brightness(.45); }
+    .cat-body { position:relative; z-index:2; padding:24px 26px; width:100%; background:linear-gradient(0deg,rgba(0,0,0,.8) 0%,transparent 100%); }
+    .cat-tag { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--primary-light); margin-bottom:6px; font-weight:600; font-family:var(--font-body); }
+    .cat-body h3 { font-family:var(--font-head); font-size:24px; font-weight:700; color:var(--white); margin-bottom:12px; line-height:1.15; }
+    .cat-link { display:inline-flex; align-items:center; gap:8px; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent); transition:gap .3s; font-weight:600; font-family:var(--font-body); }
+    .cat-card:hover .cat-link { gap:14px; }
+
+    /* ══════════════════════════════════
+       SECTION: PRODUCTS
+    ══════════════════════════════════ */
+    #products { padding:90px 40px; background:var(--white); }
+    .prod-head { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:36px; }
+    .see-all { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--primary); border-bottom:2px solid var(--primary); padding-bottom:2px; transition:all .3s; font-weight:600; font-family:var(--font-head); }
+    .see-all:hover { color:var(--primary-dark); border-color:var(--primary-dark); }
+    .ftabs { display:flex; border-bottom:2px solid #ebebeb; margin-bottom:36px; }
+    .ftab { padding:11px 22px; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--mid); transition:all .3s; border-bottom:3px solid transparent; margin-bottom:-2px; font-weight:600; font-family:var(--font-head); }
+    .ftab.on, .ftab:hover { color:var(--primary); border-bottom-color:var(--primary); }
+
+    .prod-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
+    .pcard { position:relative; cursor:pointer; }
+    .pimg { position:relative; overflow:hidden; aspect-ratio:3/4; background:var(--light); margin-bottom:14px; border-radius:4px; }
+    .pimg img { width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
+    .pcard:hover .pimg img { transform:scale(1.07); }
+    .ptag { position:absolute; top:12px; left:12px; background:var(--dark); color:var(--white); font-size:9px; letter-spacing:1.5px; text-transform:uppercase; padding:5px 10px; font-weight:700; border-radius:3px; font-family:var(--font-body); }
+    .ptag.new { background:var(--primary); color:var(--white); }
+    .pactions { position:absolute; bottom:0; left:0; right:0; display:flex; transform:translateY(100%); transition:transform .35s; border-radius:0 0 4px 4px; overflow:hidden; }
+    .pcard:hover .pactions { transform:translateY(0); }
+    .pactions button { flex:1; padding:12px; background:var(--dark); color:var(--white); font-size:9px; letter-spacing:1.5px; text-transform:uppercase; transition:background .2s; font-weight:600; font-family:var(--font-body); }
+    .pactions button:hover { background:var(--primary); color:var(--white); }
+    .pactions .wbtn { flex:0 0 44px; border-left:1px solid rgba(255,255,255,.15); }
+    .pname { font-family:var(--font-head); font-size:16px; font-weight:700; color:var(--dark); margin-bottom:4px; line-height:1.3; }
+    .psub { font-size:11px; color:var(--mid); margin-bottom:9px; font-family:var(--font-body); }
+    .pprice { display:flex; align-items:center; gap:9px; }
+    .pnow { font-size:15px; font-weight:700; color:var(--dark); font-family:var(--font-body); }
+    .pwas { font-size:12px; color:#bbb; text-decoration:line-through; font-family:var(--font-body); }
+    .poff { font-size:11px; color:#16a34a; font-weight:600; font-family:var(--font-body); }
+
+    /* ══════════════════════════════════
+       SECTION: ABOUT / BRAND STORY
+    ══════════════════════════════════ */
+    #about { position:relative; min-height:480px; overflow:hidden; display:flex; align-items:center; }
+    .about-bg { position:absolute; inset:0; background:url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1400&q=80') center/cover; filter:brightness(.25); }
+    .about-inner { position:relative; z-index:2; max-width:1300px; margin:0 auto; padding:80px 40px; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; width:100%; }
+    .about-text .gline { width:44px; height:3px; background:var(--primary); margin-bottom:22px; border-radius:2px; }
+    .about-text h2 { font-family:var(--font-head); font-size:clamp(30px,4vw,52px); font-weight:900; color:var(--white); line-height:1.0; margin-bottom:18px; letter-spacing:-0.5px; }
+    .about-text h2 em { font-style:normal; color:var(--primary-light); }
+    .about-text p { font-size:14px; color:rgba(255,255,255,.7); line-height:1.9; margin-bottom:30px; font-weight:300; font-family:var(--font-body); }
+    .about-stats { display:grid; grid-template-columns:1fr 1fr; gap:30px; }
+    .astat h4 { font-family:var(--font-head); font-size:40px; font-weight:900; color:var(--primary-light); line-height:1; }
+    .astat p { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,.5); margin-top:6px; font-family:var(--font-body); }
+
+    /* ══════════════════════════════════
+       SECTION: OFFERS / PROMISES
+    ══════════════════════════════════ */
+    #offers { padding:0; background:var(--dark); }
+    .offers-row { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:rgba(230,57,70,.2); }
+    .offer-box { background:var(--dark2); padding:44px 32px; text-align:center; transition:background .3s; }
+    .offer-box:hover { background:#1f2a4a; }
+    .offer-ico { font-size:30px; color:var(--primary); margin-bottom:18px; }
+    .offer-box h4 { font-family:var(--font-head); font-size:19px; font-weight:700; color:var(--white); margin-bottom:10px; }
+    .offer-box p { font-size:12px; color:rgba(255,255,255,.45); line-height:1.75; font-family:var(--font-body); }
+
+    /* ══════════════════════════════════
+       SECTION: TESTIMONIALS
+    ══════════════════════════════════ */
+    #reviews { padding:90px 40px; background:var(--cream); }
+    .tgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:26px; margin-top:48px; }
+    .tcard { background:var(--white); padding:38px 32px; border:2px solid #eef0f8; position:relative; transition:all .3s; border-radius:6px; }
+    .tcard:hover { border-color:var(--primary); box-shadow:0 8px 40px rgba(230,57,70,.08); }
+    .tquote { font-family:var(--font-head); font-size:65px; color:var(--primary); opacity:.15; position:absolute; top:14px; left:24px; line-height:1; }
+    .tstars { color:#f59e0b; font-size:12px; margin-bottom:14px; }
+    .ttext { font-size:13.5px; color:#555; line-height:1.9; margin-bottom:24px; font-family:var(--font-body); font-weight:300; }
+    .tauthor { display:flex; align-items:center; gap:12px; }
+    .tavatar { width:44px; height:44px; border-radius:50%; background:var(--primary); color:var(--white); display:flex; align-items:center; justify-content:center; font-family:var(--font-head); font-size:18px; font-weight:800; }
+    .tauthor h5 { font-size:13px; font-weight:700; color:var(--dark); font-family:var(--font-head); }
+    .tauthor span { font-size:11px; color:var(--mid); font-family:var(--font-body); }
+
+    #contact { padding:90px 40px; background:var(--white); }
+    .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:70px; margin-top:48px; align-items:start; }
+    .contact-info .citem { display:flex; align-items:flex-start; gap:16px; margin-bottom:28px; }
+    .contact-info .citem i { color:var(--primary); font-size:17px; margin-top:3px; width:20px; }
+    .contact-info .citem h5 { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--mid); margin-bottom:5px; font-family:var(--font-body); font-weight:600; }
+    .contact-info .citem p { font-size:13.5px; color:var(--dark); line-height:1.6; font-family:var(--font-body); }
+    .social-row { display:flex; gap:12px; margin-top:32px; }
+    .social-row a { width:40px; height:40px; border:2px solid #eef0f8; display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--mid); transition:all .3s; border-radius:4px; }
+    .social-row a:hover { border-color:var(--primary); color:var(--white); background:var(--primary); }
+
+    .contact-form { display:flex; flex-direction:column; gap:16px; }
+    .cfield {
+      width:100%; border:1px solid #e8e3d8; padding:14px 18px;
+      font-size:13px; font-family:var(--font-body); color:var(--dark);
+      outline:none; background:var(--cream); transition:border .3s;
+    }
+    .cfield:focus { border-color:var(--primary); }
+    .cfield::placeholder { color:#b0a898; }
+    textarea.cfield { resize:none; height:130px; }
+    .csend {
+      background:var(--primary); color:var(--white);
+      padding:14px; font-size:11px; letter-spacing:2px;
+      text-transform:uppercase; font-weight:700; transition:all .3s; font-family:var(--font-head); border-radius:3px;
+    }
+    .csend:hover { background:var(--primary-dark); transform:translateY(-2px); box-shadow:0 6px 20px rgba(230,57,70,.3); }
+
+    /* ══════════════════════════════════
+       NEWSLETTER
+    ══════════════════════════════════ */
+    .newsletter {
+      background:var(--dark); padding:80px 40px;
+      text-align:center; position:relative; overflow:hidden;
+      border-top:3px solid var(--primary);
+    }
+    .newsletter::before {
+      content:'MC'; font-family:var(--font-head); font-size:280px; font-weight:900;
+      color:rgba(230,57,70,.05); position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-50%); pointer-events:none; letter-spacing:10px;
+    }
+    .newsletter .gline { width:38px; height:3px; background:var(--primary); margin:0 auto 22px; border-radius:2px; }
+    .newsletter h2 { font-family:var(--font-head); font-size:clamp(26px,4vw,46px); font-weight:900; color:var(--white); margin-bottom:12px; letter-spacing:-0.5px; }
+    .newsletter h2 em { font-style:normal; color:var(--primary-light); }
+    .newsletter p { font-size:13px; color:rgba(255,255,255,.5); margin-bottom:36px; font-weight:300; font-family:var(--font-body); }
+    .nlform { display:flex; max-width:460px; margin:0 auto; border:2px solid rgba(230,57,70,.4); border-radius:3px; overflow:hidden; }
+    .nlform input { flex:1; background:transparent; border:none; outline:none; padding:15px 20px; color:var(--white); font-size:13px; font-family:var(--font-body); }
+    .nlform input::placeholder { color:rgba(255,255,255,.3); }
+    .nlform button { background:var(--primary); color:var(--white); padding:0 26px; font-size:10px; letter-spacing:2px; text-transform:uppercase; font-weight:700; transition:background .3s; font-family:var(--font-head); }
+    .nlform button:hover { background:var(--primary-dark); }
+
+    /* ══════════════════════════════════
+       FOOTER
+    ══════════════════════════════════ */
+    footer { background:var(--black); border-top:3px solid var(--primary); }
+    .footer-inner {
+      max-width:1300px; margin:0 auto;
+      display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:44px;
+      padding:60px 40px 44px;
+    }
+    .fbrand .fname { font-family:var(--font-head); font-size:22px; letter-spacing:2px; text-transform:uppercase; color:var(--white); margin-bottom:3px; font-weight:800; }
+    .fbrand .fsub { font-size:9px; letter-spacing:3px; color:var(--primary-light); text-transform:uppercase; margin-bottom:18px; font-family:var(--font-body); font-weight:500; }
+    .fbrand p { font-size:12px; color:rgba(255,255,255,.42); line-height:1.9; margin-bottom:22px; font-weight:300; font-family:var(--font-body); }
+    .fsrow { display:flex; gap:10px; }
+    .fsrow a { width:36px; height:36px; border:1px solid rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:13px; color:rgba(255,255,255,.5); transition:all .3s; border-radius:3px; }
+    .fsrow a:hover { border-color:var(--primary); color:var(--white); background:var(--primary); }
+    .fcol h4 { font-family:var(--font-head); font-size:13px; letter-spacing:1px; text-transform:uppercase; color:var(--white); margin-bottom:20px; font-weight:700; }
+    .fcol ul li { margin-bottom:10px; }
+    .fcol ul li a { font-size:12px; color:rgba(255,255,255,.42); transition:color .2s; font-family:var(--font-body); }
+    .fcol ul li a:hover { color:var(--primary-light); }
+    .fbot {
+      border-top:1px solid rgba(255,255,255,.07);
+      padding:18px 40px; max-width:1300px; margin:0 auto;
+      display:flex; justify-content:space-between; align-items:center;
+      font-size:11px; color:rgba(255,255,255,.35); font-family:var(--font-body);
+    }
+    .fbot b { color:var(--primary-light); font-weight:600; }
+    .pay-row { display:flex; gap:7px; }
+    .pay-row span { border:1px solid rgba(255,255,255,.1); padding:3px 9px; font-size:10px; color:rgba(255,255,255,.35); border-radius:3px; }
+
+    /* ══════════════════════════════════
+       MOBILE MENU
+    ══════════════════════════════════ */
+    .mob-menu { display:none; position:fixed; inset:0; z-index:3000; }
+    .mob-menu.open { display:block; }
+    .mob-ov { position:absolute; inset:0; background:rgba(0,0,0,.7); }
+    .mob-panel {
+      position:absolute; top:0; right:0; bottom:0; width:290px;
+      background:var(--dark); border-left:3px solid var(--primary);
+      transform:translateX(100%); transition:transform .4s; overflow-y:auto;
+    }
+    .mob-menu.open .mob-panel { transform:translateX(0); }
+    .mob-head { padding:22px 26px; border-bottom:1px solid rgba(230,57,70,.2); display:flex; justify-content:space-between; align-items:center; }
+    .mob-head span { font-family:var(--font-head); font-size:18px; color:var(--white); letter-spacing:2px; font-weight:800; }
+    .mob-head button { color:rgba(255,255,255,.7); font-size:18px; }
+    .mob-links a { display:block; padding:15px 26px; border-bottom:1px solid rgba(255,255,255,.05); color:rgba(255,255,255,.7); font-size:11px; letter-spacing:1.5px; text-transform:uppercase; transition:all .2s; font-family:var(--font-head); font-weight:600; }
+    .mob-links a:hover { color:var(--white); background:rgba(230,57,70,.15); padding-left:32px; }
+
+    /* ══════════════════════════════════
+       SCROLL TO TOP
+    ══════════════════════════════════ */
+    #goTop {
+      position:fixed; bottom:28px; right:28px;
+      width:46px; height:46px; background:var(--primary); color:var(--white);
+      font-size:16px; display:none; align-items:center; justify-content:center;
+      z-index:999; transition:all .3s; border-radius:3px;
+      box-shadow:0 4px 16px rgba(230,57,70,.5);
+    }
+    #goTop.show { display:flex; }
+    #goTop:hover { background:var(--primary-dark); transform:translateY(-3px); }
+
+    /* ══════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════ */
+    @media(max-width:1100px) {
+      .cat-grid { grid-template-columns:1fr 1fr; grid-template-rows:auto; }
+      .cat-card:first-child { grid-row:span 1; }
+      .prod-grid { grid-template-columns:repeat(2,1fr); }
+      .offers-row { grid-template-columns:repeat(2,1fr); }
+      .footer-inner { grid-template-columns:1fr 1fr; gap:32px; }
+      .tgrid { grid-template-columns:1fr 1fr; }
+      .about-inner { grid-template-columns:1fr; gap:40px; }
+    }
+    @media(max-width:768px) {
+      .header-inner { padding:0 20px; }
+      .nav { display:none; }
+      .ham { display:block; }
+      .slide-body { padding:0 24px; }
+      .slide-body h1 { font-size:36px; }
+      .slide-body p { display:none; }
+      .sprev { left:12px; } .snext { right:12px; }
+      .sdots { left:24px; }
+      #categories, #products, #reviews, #contact, .newsletter { padding:60px 20px; }
+      .cat-grid { grid-template-columns:1fr; }
+      .prod-grid { grid-template-columns:repeat(2,1fr); gap:12px; }
+      .offers-row { grid-template-columns:1fr 1fr; }
+      .about-inner { padding:60px 20px; }
+      .about-stats { grid-template-columns:1fr 1fr; }
+      .footer-inner { grid-template-columns:1fr; padding:44px 20px 32px; }
+      .fbot { flex-direction:column; gap:12px; text-align:center; padding:16px 20px; }
+      .tgrid { grid-template-columns:1fr; }
+      .contact-grid { grid-template-columns:1fr; gap:40px; }
+      .prod-head { flex-direction:column; align-items:flex-start; gap:12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce-bar">
+  Free shipping above <b>₹999</b> &nbsp;·&nbsp; Code <b>MRITHULA10</b> for 10% off &nbsp;·&nbsp; New arrivals every Friday
+</div>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="header-inner">
+    <a href="#home" class="logo">
+      <img src="https://i.ibb.co/KjLwyd1L/Logo.png" alt="Mrithula Collections" style="height:40px; width:auto; display:block;"/>
+    </a>
+    <nav class="nav">
+      <a href="#home" class="active">Home</a>
+      <a href="#categories">Categories</a>
+      <a href="#products">Shop</a>
+      <a href="#about">About</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#contact">Contact</a>
+      <a href="#products" class="sale-link">Sale</a>
+    </nav>
+    <div class="hicons">
+      <div class="hicon"><i class="fas fa-search"></i></div>
+      <div class="hicon"><i class="far fa-heart"></i><div class="badge">3</div></div>
+      <div class="hicon"><i class="fas fa-shopping-bag"></i><div class="badge">2</div></div>
+      <div class="hicon"><i class="fas fa-user"></i></div>
+      <button class="ham" onclick="openMob()"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+</header>
+
+<!-- ══ SECTION: HOME ══ -->
+<section id="home">
+  <div class="slides-wrap" id="slidesWrap">
+
+    <div class="slide">
+      <div class="slide-bg" style="background-image:url('https://i.ibb.co/60x8td4b/Website.png')"></div>
+      <div class="slide-body">
+        <div class="slide-kicker"><div class="kline"></div><span>New Season 2025</span></div>
+        <h1>The Art of<br><em>Feminine Grace</em></h1>
+        <p>Discover our curated collection of luxurious sarees, lehengas & ethnic wear crafted for the modern Indian woman.</p>
+        <div class="slide-cta">
+          <a href="#products" class="btn-gold">Explore Collection</a>
+          <a href="#categories" class="btn-ghost">View Categories</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="slide-bg" style="background-image:url('https://i.ibb.co/VYnJ2g3f/Website-1.png')"></div>
+      <div class="slide-body">
+        <div class="slide-kicker"><div class="kline"></div><span>Men's Luxury Edit</span></div>
+        <h1>Refined<br><em>Sophistication</em></h1>
+        <p>Premium formals, smart casuals & occasion wear — where every stitch tells a story of excellence.</p>
+        <div class="slide-cta">
+          <a href="#products" class="btn-gold">Shop Men</a>
+          <a href="#categories" class="btn-ghost">View All</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="slide-bg" style="background-image:url('https://i.ibb.co/KcHMLyHm/Website-2.png')"></div>
+      <div class="slide-body">
+        <div class="slide-kicker"><div class="kline"></div><span>Grand Sale — Upto 70% Off</span></div>
+        <h1>Luxury at<br><em>Every Price</em></h1>
+        <p>Thousands of exquisite pieces at exceptional prices. Limited time only — the finest fashion awaits.</p>
+        <div class="slide-cta">
+          <a href="#products" class="btn-gold">Shop the Sale</a>
+          <a href="#categories" class="btn-ghost">New Arrivals</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <button class="sprev" onclick="slideDir(-1)"><i class="fas fa-chevron-left"></i></button>
+  <button class="snext" onclick="slideDir(1)"><i class="fas fa-chevron-right"></i></button>
+  <div class="sdots" id="sdots"></div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="mtrack">
+    <div class="mitem"><i class="fas fa-gem"></i> Premium Quality</div>
+    <div class="mitem"><i class="fas fa-truck"></i> Free Shipping ₹999+</div>
+    <div class="mitem"><i class="fas fa-undo"></i> 07-Day Returns</div>
+    <div class="mitem"><i class="fas fa-shield-alt"></i> 100% Authentic</div>
+    <div class="mitem"><i class="fas fa-star"></i> 50,000+ Happy Customers</div>
+    <div class="mitem"><i class="fas fa-gem"></i> Premium Quality</div>
+    <div class="mitem"><i class="fas fa-truck"></i> Free Shipping ₹999+</div>
+    <div class="mitem"><i class="fas fa-undo"></i> 07-Day Returns</div>
+    <div class="mitem"><i class="fas fa-shield-alt"></i> 100% Authentic</div>
+    <div class="mitem"><i class="fas fa-star"></i> 50,000+ Happy Customers</div>
+  </div>
+</div>
+
+<!-- ══ SECTION: CATEGORIES ══ -->
+<section id="categories">
+  <div class="sec-label"><div class="ln"></div><span>Explore</span></div>
+  <h2 class="sec-title">Shop by <em>Category</em></h2>
+  <div class="cat-grid">
+    <div class="cat-card">
+      <div class="cat-bg" style="background-image:url('https://i.ibb.co/SWNL3sc/Beige-and-Brown-Modern-Fashion-Style-Poster-1.png')"></div>
+      <div class="cat-body">
+        <div class="cat-tag">Women's</div>
+        <h3>Printed<br>Kurta Suit Set</h3>
+        <a href="#products" class="cat-link">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-bg" style="background-image:url('https://i.ibb.co/LzsQ1jJd/Untitled-design.png')"></div>
+      <div class="cat-body">
+        <div class="cat-tag">Men's</div>
+        <h3>Trendy Shirt</h3>
+        <a href="#products" class="cat-link">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-bg" style="background-image:url('https://i.ibb.co/hRVmGpCb/Untitled-design-1.png')"></div>
+      <div class="cat-body">
+        <div class="cat-tag">Women's</div>
+        <h3>Sleepwear</h3>
+        <a href="#products" class="cat-link">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-bg" style="background-image:url('https://i.ibb.co/HLnJgPgZ/Kids-Fashion.png')"></div>
+      <div class="cat-body">
+        <div class="cat-tag">Kid's</div>
+        <h3>Trending Fashion</h3>
+        <a href="#products" class="cat-link">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-bg" style="background-image:url('https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80')"></div>
+      <div class="cat-body">
+        <div class="cat-tag">Women's Accessories</div>
+        <h3>Bags & Jewellery</h3>
+        <a href="#products" class="cat-link">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION: PRODUCTS ══ -->
+<section id="products">
+  <div class="prod-head">
+    <div>
+      <div class="sec-label"><div class="ln"></div><span>Handpicked</span></div>
+      <h2 class="sec-title" style="margin-bottom:0">Featured <em>Pieces</em></h2>
+    </div>
+    <a href="#products" class="see-all">View All</a>
+  </div>
+  <div class="ftabs">
+    <button class="ftab on" onclick="setFtab(this)">All</button>
+    <button class="ftab" onclick="setFtab(this)">Women</button>
+    <button class="ftab" onclick="setFtab(this)">Men</button>
+    <button class="ftab" onclick="setFtab(this)">Kids</button>
+    <button class="ftab" onclick="setFtab(this)">On Sale</button>
+  </div>
+  <div class="prod-grid">
+    <div class="pcard">
+      <div class="pimg">
+        <img src="https://images.unsplash.com/photo-1583744946564-b52ac1c389c8?w=500&q=80" alt="Saree"/>
+        <div class="ptag new">New</div>
+        <div class="pactions"><button onclick="window.location.href='order.html?product=Kanjivaram Silk Saree&price=₹3,499'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+      </div>
+      <div class="pname">Kanjivaram Silk Saree</div>
+      <div class="psub">Royal Blue · Women's</div>
+      <div class="pprice"><span class="pnow">₹3,499</span><span class="pwas">₹6,999</span><span class="poff">50% off</span></div>
+    </div>
+    <div class="pcard">
+      <div class="pimg">
+        <img src="https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=500&q=80" alt="Lehenga"/>
+        <div class="ptag">Bestseller</div>
+        <div class="pactions"><button onclick="window.location.href='order.html?product=Bridal Lehenga Choli&price=₹4,999'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+      </div>
+      <div class="pname">Bridal Lehenga Choli</div>
+      <div class="psub">Magenta Pink · Bridal</div>
+      <div class="pprice"><span class="pnow">₹4,999</span><span class="pwas">₹9,999</span><span class="poff">50% off</span></div>
+    </div>
+    <div class="pcard">
+      <div class="pimg">
+        <img src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=500&q=80" alt="Shirt"/>
+        <div class="ptag new">New</div>
+        <div class="pactions"><button onclick="window.location.href='order.html?product=Premium Formal Shirt&price=₹799'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+      </div>
+      <div class="pname">Premium Formal Shirt</div>
+      <div class="psub">Sky Blue · Men's</div>
+      <div class="pprice"><span class="pnow">₹799</span><span class="pwas">₹1,299</span><span class="poff">38% off</span></div>
+    </div>
+    <div class="pcard">
+      <div class="pimg">
+        <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80" alt="Bag"/>
+        <div class="ptag new">New</div>
+        <div class="pactions"><button onclick="window.location.href='order.html?product=Womens Sling Bag&price=₹699'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+      </div>
+      <div class="pname">Women's Sling Bag</div>
+      <div class="psub">Tan Brown · Accessories</div>
+      <div class="pprice"><span class="pnow">₹699</span><span class="pwas">₹1,299</span><span class="poff">46% off</span></div>
+    </div>
+    <div class="pcard">
+      <div class="pimg">
+        <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=500&q=80" alt="Kids"/>
+        <div class="ptag">Trending</div>
+        <div class="pactions"><button onclick="window.location.href='order.html?product=Kids Festive Kurta Set&price=₹599'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+      </div>
+      <div class="pname">Kids Festive Kurta Set</div>
+      <div class="psub">Multi Color · Kids'</div>
+      <div class="pprice"><span class="pnow">₹599</span><span class="pwas">₹999</span><span class="poff">40% off</span></div>
+    </div>
+    <div class="pcard">
+      <div class="pimg">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" alt="Sneakers"/>
+        <div class="ptag new">New</div>
+        <div class="pactions"><button onclick="window.location.href='order.html?product=Unisex Running Sneakers&price=₹1,299'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+      </div>
+      <div class="pname">Unisex Running Sneakers</div>
+      <div class="psub">White · Footwear</div>
+      <div class="pprice"><span class="pnow">₹1,299</span><span class="pwas">₹2,499</span><span class="poff">48% off</span></div>
+    </div>
+    <div class="pcard">
+      <div class="pimg">
+        <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b4d05?w=500&q=80" alt="Jeans"/>
+        <div class="ptag">Sale</div>
+        <div class="pactions"><button onclick="window.location.href='order.html?product=Slim Fit Stretch Jeans&price=₹999'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+      </div>
+      <div class="pname">Slim Fit Stretch Jeans</div>
+      <div class="psub">Dark Navy · Men's</div>
+      <div class="pprice"><span class="pnow">₹999</span><span class="pwas">₹1,799</span><span class="poff">44% off</span></div>
+    </div>
+    <div class="pcard">
+      <div class="pimg">
+        <img src="https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80" alt="Kurti"/>
+        <div class="ptag new">New</div>
+        <div class="pactions"><button onclick="window.location.href='order.html?product=Anarkali Floral Kurti&price=₹899'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+      </div>
+      <div class="pname">Anarkali Floral Kurti</div>
+      <div class="psub">Pastel Pink · Women's</div>
+      <div class="pprice"><span class="pnow">₹899</span><span class="pwas">₹1,499</span><span class="poff">40% off</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION: ABOUT ══ -->
+<section id="about">
+  <div class="about-bg"></div>
+  <div class="about-inner">
+    <div class="about-text">
+      <div class="gline"></div>
+      <h2>Crafted for the<br><em>Discerning Few</em></h2>
+      <p>At Mrithula Collection, every piece is selected with an unwavering commitment to quality, elegance and timeless style. Based in Chennai, Tamil Nadu, we bring the finest Indian fashion to your doorstep — because you deserve nothing but the best.</p>
+      <a href="#contact" class="btn-gold">Get in Touch</a>
+    </div>
+    <div class="about-stats">
+      <div class="astat"><h4>50K+</h4><p>Happy Customers</p></div>
+      <div class="astat"><h4>5000+</h4><p>Curated Styles</p></div>
+      <div class="astat"><h4>4.9★</h4><p>Average Rating</p></div>
+      <div class="astat"><h4>6+</h4><p>Years of Trust</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION: OFFERS ══ -->
+<section id="offers">
+  <div class="offers-row">
+    <div class="offer-box"><div class="offer-ico"><i class="fas fa-shipping-fast"></i></div><h4>Free Delivery</h4><p>Complimentary shipping on all orders above ₹999 across India</p></div>
+    <div class="offer-box"><div class="offer-ico"><i class="fas fa-undo-alt"></i></div><h4>Easy Returns</h4><p>07-day hassle-free return policy with no questions asked</p></div>
+    <div class="offer-box"><div class="offer-ico"><i class="fas fa-gem"></i></div><h4>100% Authentic</h4><p>Every piece is quality-certified and sourced from verified artisans</p></div>
+    <div class="offer-box"><div class="offer-ico"><i class="fas fa-headset"></i></div><h4>24/7 Support</h4><p>Dedicated customer care available every day for you</p></div>
+  </div>
+</section>
+
+<!-- ══ SECTION: REVIEWS ══ -->
+<section id="reviews">
+  <div class="sec-label"><div class="ln"></div><span>Testimonials</span></div>
+  <h2 class="sec-title">What Our <em>Clients Say</em></h2>
+  <div class="tgrid">
+    <div class="tcard">
+      <div class="tquote">"</div>
+      <div class="tstars">★★★★★</div>
+      <p class="ttext">Absolutely love the saree I ordered! The fabric quality is exceptional and it arrived two days before the expected date. Truly a luxury experience from start to finish.</p>
+      <div class="tauthor"><div class="tavatar">P</div><div><h5>Priya Sharma</h5><span>Chennai, Tamil Nadu</span></div></div>
+    </div>
+    <div class="tcard">
+      <div class="tquote">"</div>
+      <div class="tstars">★★★★★</div>
+      <p class="ttext">Great collection of men's formal shirts. Bought 3 and the fit is perfect. The packaging was beautifully done — felt like unboxing a luxury brand gift.</p>
+      <div class="tauthor"><div class="tavatar">R</div><div><h5>Rajesh Kumar</h5><span>Bangalore, Karnataka</span></div></div>
+    </div>
+    <div class="tcard">
+      <div class="tquote">"</div>
+      <div class="tstars">★★★★★</div>
+      <p class="ttext">Ordered a lehenga for my daughter's event — exactly as shown, beautiful embroidery and superb stitching. Mrithula Collection never disappoints!</p>
+      <div class="tauthor"><div class="tavatar">S</div><div><h5>Sunita Reddy</h5><span>Hyderabad, Telangana</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <div class="gline"></div>
+  <h2>Join the <em>Inner Circle</em></h2>
+  <p>Be first to know about new arrivals, exclusive offers & private sale events</p>
+  <div class="nlform">
+    <input type="email" placeholder="Your email address"/>
+    <button>Subscribe</button>
+  </div>
+</div>
+
+<!-- ══ SECTION: CONTACT ══ -->
+<section id="contact">
+  <div class="sec-label"><div class="ln"></div><span>Get in Touch</span></div>
+  <h2 class="sec-title">We'd Love to <em>Hear from You</em></h2>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="citem">
+        <i class="fas fa-map-marker-alt"></i>
+        <div><h5>Address</h5><p>123, Fashion Street, Tambaram,<br>Chennai – 600045, Tamil Nadu</p></div>
+      </div>
+      <div class="citem">
+        <i class="fas fa-phone"></i>
+        <div><h5>Phone</h5><p>+91 98765 43210</p></div>
+      </div>
+      <div class="citem">
+        <i class="fas fa-envelope"></i>
+        <div><h5>Email</h5><p>support@mrithulacollection.com</p></div>
+      </div>
+      <div class="citem">
+        <i class="fas fa-clock"></i>
+        <div><h5>Hours</h5><p>Monday – Saturday: 9 AM – 7 PM</p></div>
+      </div>
+      <div class="social-row">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+      </div>
+    </div>
+    <div>
+      <div class="contact-form">
+        <input type="text" class="cfield" placeholder="Your Full Name"/>
+        <input type="email" class="cfield" placeholder="Your Email Address"/>
+        <input type="tel" class="cfield" placeholder="Your Phone Number"/>
+        <textarea class="cfield" placeholder="Your Message"></textarea>
+        <button class="csend">Send Message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="fbrand">
+      <img src="https://i.ibb.co/Y7dR5Pjg/Logo-1.png" alt="Mrithula Collections" style="height:45px; width:auto; margin-bottom:16px; opacity:0.9;"/>
+      <p>Your destination for luxury Indian fashion. Bringing you the finest ethnic wear, accessories and lifestyle products from across India.</p>
+      <div class="fsrow">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="fcol">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#categories">Categories</a></li>
+        <li><a href="#products">Shop Now</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#products">New Arrivals</a></li>
+        <li><a href="#products">Best Sellers</a></li>
+        <li><a href="#products">Women's Wear</a></li>
+        <li><a href="#products">Men's Wear</a></li>
+        <li><a href="#products">Kids' Wear</a></li>
+        <li><a href="#products">Sale & Offers</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="#contact">Track My Order</a></li>
+        <li><a href="#contact">Returns & Refunds</a></li>
+        <li><a href="#contact">Shipping Info</a></li>
+        <li><a href="#contact">Size Guide</a></li>
+        <li><a href="#contact">FAQs</a></li>
+        <li><a href="#contact">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="fbot">
+    <p>© 2025 <b>Mrithula Collection</b>. All rights reserved. Designed with ❤️ in Tamil Nadu.</p>
+    <div class="pay-row">
+      <span>Visa</span><span>Mastercard</span><span>UPI</span><span>PhonePe</span><span>Paytm</span><span>COD</span>
+    </div>
+  </div>
+</footer>
+
+<!-- SCROLL TOP -->
+<button id="goTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <div class="mob-ov" onclick="closeMob()"></div>
+  <div class="mob-panel">
+    <div class="mob-head">
+      <img src="Logo.png" alt="Mrithula Collections" style="height:36px; width:auto;"/>
+      <button onclick="closeMob()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mob-links">
+      <a href="#home" onclick="closeMob()">🏠 Home</a>
+      <a href="#categories" onclick="closeMob()">🗂️ Categories</a>
+      <a href="#products" onclick="closeMob()">🛍️ Shop</a>
+      <a href="#about" onclick="closeMob()">ℹ️ About Us</a>
+      <a href="#reviews" onclick="closeMob()">⭐ Reviews</a>
+      <a href="#contact" onclick="closeMob()">📞 Contact</a>
+      <a href="#products" onclick="closeMob()">🏷️ Sale</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── SLIDER ──
+  let cur = 0;
+  const allSlides = document.querySelectorAll('.slide');
+  const swrap = document.getElementById('slidesWrap');
+  const sdotsEl = document.getElementById('sdots');
+  allSlides.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'sdot' + (i===0?' on':'');
+    d.onclick = () => goTo(i);
+    sdotsEl.appendChild(d);
+  });
+  function goTo(n) {
+    cur = (n + allSlides.length) % allSlides.length;
+    swrap.style.transform = `translateX(-${cur*100}%)`;
+    document.querySelectorAll('.sdot').forEach((d,i) => d.classList.toggle('on', i===cur));
+  }
+  function slideDir(d) { goTo(cur+d); }
+  setInterval(() => slideDir(1), 5500);
+
+  // ── TABS ──
+  function setFtab(btn) {
+    document.querySelectorAll('.ftab').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+  }
+
+  // ── ACTIVE NAV on scroll ──
+  const sections = document.querySelectorAll('section[id], div[id="home"]');
+  const navLinks = document.querySelectorAll('.nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if(window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#'+current);
+    });
+    document.getElementById('goTop').classList.toggle('show', window.scrollY > 400);
+  });
+
+  // ── MOBILE MENU ──
+  function openMob() { document.getElementById('mobMenu').classList.add('open'); }
+  function closeMob() { document.getElementById('mobMenu').classList.remove('open'); }
+</script>
+</body>
+</html>

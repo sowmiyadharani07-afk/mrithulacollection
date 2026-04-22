@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Place Order – Mrithula Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #e63946;
+      --primary-dark: #c1121f;
+      --primary-light: #ff6b6b;
+      --accent: #f4a261;
+      --dark: #1a1a2e;
+      --dark2: #16213e;
+      --mid: #6b7280;
+      --light: #f0f4ff;
+      --white: #ffffff;
+      --cream: #fafbff;
+      --font-head: 'League Spartan', sans-serif;
+      --font-body: 'Poppins', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .top-bar {
+      background: var(--dark);
+      border-bottom: 2px solid var(--primary);
+      padding: 0 40px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .top-bar .logo {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .top-bar .logo span { color: var(--primary-light); }
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      text-decoration: none;
+      font-family: var(--font-head);
+      transition: color 0.3s;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+    .back-btn:hover { color: var(--primary-light); }
+
+    /* ── PROGRESS STEPS ── */
+    .progress-wrap {
+      background: var(--white);
+      border-bottom: 1px solid #eef0f8;
+      padding: 18px 40px;
+    }
+    .progress-steps {
+      max-width: 560px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-family: var(--font-head);
+      color: #bbb;
+    }
+    .step.active { color: var(--primary); }
+    .step.done { color: #16a34a; }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--white);
+      color: #bbb;
+      flex-shrink: 0;
+    }
+    .step.active .step-num {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: var(--white);
+    }
+    .step.done .step-num {
+      border-color: #16a34a;
+      background: #16a34a;
+      color: var(--white);
+    }
+    .step-line {
+      width: 60px;
+      height: 2px;
+      background: #eee;
+      margin: 0 6px;
+    }
+    .step-line.done { background: #16a34a; }
+
+    /* ── MAIN LAYOUT ── */
+    .main {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 24px 60px;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ── FORM CARD ── */
+    .form-card {
+      background: var(--white);
+      border: 1px solid #eef0f8;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .form-card-head {
+      background: var(--dark);
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .form-card-head i {
+      color: var(--primary-light);
+      font-size: 18px;
+    }
+    .form-card-head h2 {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 1px;
+    }
+    .form-card-head p {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      font-family: var(--font-body);
+      margin-top: 2px;
+    }
+    .form-body { padding: 32px; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .field-group {
+      margin-bottom: 20px;
+    }
+    .field-group.full { grid-column: span 2; }
+    label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--mid);
+      font-weight: 600;
+      margin-bottom: 7px;
+      font-family: var(--font-body);
+    }
+    label .req { color: var(--primary); margin-left: 2px; }
+    input, select, textarea {
+      width: 100%;
+      border: 1.5px solid #e8e3d8;
+      padding: 13px 16px;
+      font-size: 13px;
+      font-family: var(--font-body);
+      color: var(--dark);
+      background: var(--cream);
+      outline: none;
+      border-radius: 4px;
+      transition: border 0.3s, box-shadow 0.3s;
+      appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(230,57,70,0.08);
+      background: var(--white);
+    }
+    input::placeholder, textarea::placeholder { color: #c0b8b0; }
+    textarea { resize: none; height: 100px; }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; cursor: pointer; }
+
+    .qty-wrap {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #e8e3d8;
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--cream);
+    }
+    .qty-btn {
+      width: 44px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f4f4f4;
+      color: var(--dark);
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      font-family: var(--font-body);
+    }
+    .qty-btn:hover { background: var(--primary); color: var(--white); }
+    .qty-val {
+      flex: 1;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+      font-family: var(--font-head);
+      border: none;
+      background: transparent;
+      outline: none;
+    }
+
+    /* product info in form */
+    .product-badge {
+      background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 100%);
+      border: 1px solid rgba(230,57,70,0.3);
+      border-radius: 6px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .product-badge i {
+      color: var(--primary);
+      font-size: 20px;
+    }
+    .product-badge .pb-name {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .product-badge .pb-price {
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+      font-family: var(--font-body);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: var(--primary);
+      color: var(--white);
+      padding: 16px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-family: var(--font-head);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .submit-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(230,57,70,0.35);
+    }
+    .submit-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ── ORDER SUMMARY CARD ── */
+    .summary-card {
+      background: var(--white);
+      border: 1px solid #eef0f8;
+      border-radius: 8px;
+      overflow: hidden;
+      position: sticky;
+      top: 20px;
+    }
+    .summary-head {
+      background: var(--primary);
+      padding: 18px 24px;
+    }
+    .summary-head h3 {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .summary-body { padding: 24px; }
+    .summary-product {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed #eee;
+      margin-bottom: 20px;
+    }
+    .sp-icon {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--dark), var(--dark2));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sp-icon i { color: var(--primary-light); font-size: 20px; }
+    .sp-name {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.3;
+    }
+    .sp-sub { font-size: 11px; color: var(--mid); margin-top: 3px; font-family: var(--font-body); }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 13px;
+      font-family: var(--font-body);
+    }
+    .summary-row .lbl { color: var(--mid); }
+    .summary-row .val { font-weight: 600; color: var(--dark); }
+    .summary-row.total {
+      border-top: 2px solid var(--primary);
+      padding-top: 14px;
+      margin-top: 14px;
+      font-size: 16px;
+    }
+    .summary-row.total .lbl {
+      font-family: var(--font-head);
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+    .summary-row.total .val {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .free-tag {
+      background: #dcfce7;
+      color: #16a34a;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 3px;
+      letter-spacing: 0.5px;
+      font-family: var(--font-body);
+    }
+
+    .trust-badges {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eef0f8;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .tbadge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--mid);
+      font-family: var(--font-body);
+    }
+    .tbadge i { color: var(--primary); font-size: 13px; width: 16px; }
+
+    /* ── SUCCESS STATE ── */
+    .success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(13,13,13,0.7);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    .success-overlay.show { display: flex; }
+    .success-box {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 48px 40px;
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      background: #dcfce7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 28px;
+      color: #16a34a;
+    }
+    .success-box h3 {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+    .success-box p {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.7;
+      margin-bottom: 24px;
+      font-family: var(--font-body);
+    }
+    .success-box .go-pay {
+      background: var(--primary);
+      color: var(--white);
+      padding: 14px 32px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-family: var(--font-head);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    .success-box .go-pay:hover { background: var(--primary-dark); }
+
+    /* ── ERROR MSG ── */
+    .err-msg {
+      background: #fff1f1;
+      border: 1px solid rgba(230,57,70,0.3);
+      color: var(--primary-dark);
+      font-size: 12px;
+      padding: 10px 14px;
+      border-radius: 4px;
+      margin-top: 12px;
+      display: none;
+      font-family: var(--font-body);
+    }
+    .err-msg.show { display: block; }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width: 900px) {
+      .main { grid-template-columns: 1fr; }
+      .summary-card { position: static; }
+    }
+    @media(max-width: 600px) {
+      .top-bar { padding: 0 20px; }
+      .main { padding: 0 16px 40px; margin-top: 24px; }
+      .form-body { padding: 20px; }
+      .field-row { grid-template-columns: 1fr; }
+      .field-group.full { grid-column: span 1; }
+      .progress-wrap { padding: 14px 20px; }
+      .step-line { width: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="top-bar">
+  <a href="index.html" class="logo">Mrithula <span>Collection</span></a>
+  <button class="back-btn" onclick="history.back()">
+    <i class="fas fa-arrow-left"></i> Back to Shop
+  </button>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="step active">
+      <div class="step-num">1</div>
+      <span>Order Details</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step2">
+      <div class="step-num">2</div>
+      <span>Payment</span>
+    </div>
+    <div class="step-line" id="line2"></div>
+    <div class="step" id="step3">
+      <div class="step-num">3</div>
+      <span>Confirmed</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ORDER FORM -->
+  <div class="form-card">
+    <div class="form-card-head">
+      <i class="fas fa-clipboard-list"></i>
+      <div>
+        <h2>Your Order Details</h2>
+        <p>Fill in your details and we'll get it delivered to you</p>
+      </div>
+    </div>
+    <div class="form-body">
+
+      <!-- Product badge -->
+      <div class="product-badge">
+        <i class="fas fa-tshirt"></i>
+        <div>
+          <div class="pb-name" id="badgeName">—</div>
+          <div class="pb-price" id="badgePrice">—</div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" id="fName" placeholder="e.g. Priya Sharma" required/>
+        </div>
+        <div class="field-group">
+          <label>Phone Number <span class="req">*</span></label>
+          <input type="tel" id="fPhone" placeholder="10-digit mobile number" maxlength="10" required/>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Email Address <span class="req">*</span></label>
+        <input type="email" id="fEmail" placeholder="yourname@email.com" required/>
+      </div>
+
+      <div class="field-group">
+        <label>Delivery Address <span class="req">*</span></label>
+        <textarea id="fAddress" placeholder="House / Flat No., Street, Area, City, State, PIN Code" required></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label>Size / Variant <span class="req">*</span></label>
+          <select id="fSize" required>
+            <option value="">Select size</option>
+            <option>XS</option>
+            <option>S</option>
+            <option>M</option>
+            <option>L</option>
+            <option>XL</option>
+            <option>XXL</option>
+            <option>Free Size</option>
+            <option>Custom / Other</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Quantity <span class="req">*</span></label>
+          <div class="qty-wrap">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <input class="qty-val" id="fQty" type="number" value="1" min="1" max="20" readonly/>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Special Notes <span style="color:#bbb;font-weight:400;">(optional)</span></label>
+        <textarea id="fNotes" placeholder="Any special instructions, colour preference, alternate contact..." style="height:80px;"></textarea>
+      </div>
+
+      <div class="err-msg" id="errMsg">
+        <i class="fas fa-exclamation-circle"></i> &nbsp;Please fill all required fields correctly before continuing.
+      </div>
+
+      <button class="submit-btn" id="submitBtn" onclick="submitOrder()">
+        <i class="fas fa-lock"></i>
+        Confirm Order & Proceed to Payment
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div class="summary-card">
+    <div class="summary-head">
+      <h3>Order Summary</h3>
+    </div>
+    <div class="summary-body">
+      <div class="summary-product">
+        <div class="sp-icon"><i class="fas fa-tshirt"></i></div>
+        <div>
+          <div class="sp-name" id="sumName">—</div>
+          <div class="sp-sub" id="sumSub">Qty: 1</div>
+        </div>
+      </div>
+      <div class="summary-row">
+        <span class="lbl">Item Price</span>
+        <span class="val" id="sumPrice">—</span>
+      </div>
+      <div class="summary-row">
+        <span class="lbl">Delivery</span>
+        <span class="free-tag">FREE</span>
+      </div>
+      <div class="summary-row">
+        <span class="lbl">Discount</span>
+        <span class="val" style="color:#16a34a;">Already Applied ✓</span>
+      </div>
+      <div class="summary-row total">
+        <span class="lbl">Total Payable</span>
+        <span class="val" id="sumTotal">—</span>
+      </div>
+
+      <div class="trust-badges">
+        <div class="tbadge"><i class="fas fa-shield-alt"></i> 100% Secure Ordering</div>
+        <div class="tbadge"><i class="fas fa-shipping-fast"></i> Free Delivery Pan India</div>
+        <div class="tbadge"><i class="fas fa-undo-alt"></i> 7-Day Easy Returns</div>
+        <div class="tbadge"><i class="fas fa-gem"></i> 100% Authentic Products</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS POPUP -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div class="success-icon"><i class="fas fa-check"></i></div>
+    <h3>Order Recorded!</h3>
+    <p>Your order details have been saved.<br>Now complete your payment via UPI to confirm your order.</p>
+    <button class="go-pay" onclick="goToPayment()">
+      <i class="fas fa-qrcode"></i> &nbsp;Proceed to UPI Payment
+    </button>
+  </div>
+</div>
+
+<script>
+  // ── READ URL PARAMS ──
+  const params = new URLSearchParams(window.location.search);
+  const productName = params.get('product') || 'Your Selected Item';
+  const productPrice = params.get('price') || '₹0';
+
+  // Populate product info
+  document.getElementById('badgeName').textContent = productName;
+  document.getElementById('badgePrice').textContent = productPrice;
+  document.getElementById('sumName').textContent = productName;
+  document.getElementById('sumPrice').textContent = productPrice;
+  document.getElementById('sumTotal').textContent = productPrice;
+
+  // ── QUANTITY ──
+  function changeQty(delta) {
+    const el = document.getElementById('fQty');
+    let val = parseInt(el.value) + delta;
+    if (val < 1) val = 1;
+    if (val > 20) val = 20;
+    el.value = val;
+    document.getElementById('sumSub').textContent = 'Qty: ' + val;
+  }
+
+  // ── GOOGLE SHEETS SUBMIT ──
+  // 🔴 REPLACE THIS URL with your Google Apps Script Web App URL (see instructions below)
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzIIkP7nLifdpsdUhPSm2ki0GRHv8OKOGo4NyUZvZMAPn_eVWHDsGWNE_n7AeyQu7jL/exec';
+
+  let orderData = {};
+
+  function submitOrder() {
+    const name    = document.getElementById('fName').value.trim();
+    const phone   = document.getElementById('fPhone').value.trim();
+    const email   = document.getElementById('fEmail').value.trim();
+    const address = document.getElementById('fAddress').value.trim();
+    const size    = document.getElementById('fSize').value;
+    const qty     = document.getElementById('fQty').value;
+    const notes   = document.getElementById('fNotes').value.trim();
+    const errEl   = document.getElementById('errMsg');
+
+    // Validate
+    if (!name || !phone || !email || !address || !size) {
+      errEl.classList.add('show');
+      return;
+    }
+    if (phone.length < 10 || isNaN(phone)) {
+      errEl.classList.add('show');
+      return;
+    }
+    errEl.classList.remove('show');
+
+    orderData = { name, phone, email, address, size, qty, notes, product: productName, price: productPrice };
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> &nbsp;Saving your order...';
+
+    // Send to Google Sheet
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData)
+    })
+    .then(() => {
+      document.getElementById('successOverlay').classList.add('show');
+    })
+    .catch(() => {
+      // Even if network fails, still let user proceed (sheet may have got it)
+      document.getElementById('successOverlay').classList.add('show');
+    });
+  }
+
+  function goToPayment() {
+    const qParams = new URLSearchParams({
+      product: orderData.product || productName,
+      price:   orderData.price   || productPrice,
+      name:    orderData.name    || '',
+    });
+    window.location.href = 'payment.html?' + qParams.toString();
+  }
+</script>
+</body>
+</html>
