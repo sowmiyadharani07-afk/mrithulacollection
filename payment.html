@@ -755,9 +755,6 @@
 
   // ── QR CODE ── (using custom QR image)
 // QR image is set directly in HTML
-  const upiString = `upi://pay?pa=9363565732@yescred&pn=Mrithula%20Collection&cu=INR`;
-  const qrUrl = `https://chart.googleapis.com/chart?chs=180x180&cht=qr&chl=${encodeURIComponent(upiString)}&choe=UTF-8`;
-  document.getElementById('qrImg').src = qrUrl;
 
   // ── COPY UPI ID ──
   function copyUPI() {
