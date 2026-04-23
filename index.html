@@ -535,7 +535,7 @@
       <div class="sec-label"><div class="ln"></div><span>Handpicked</span></div>
       <h2 class="sec-title" style="margin-bottom:0">Featured <em>Pieces</em></h2>
     </div>
-    <a href="#products" class="see-all">View All</a>
+    <a href="products.html" class="see-all">View All</a>
   </div>
   <div class="ftabs">
     <button class="ftab on" onclick="setFtab(this)">All</button>
@@ -856,6 +856,27 @@
   // ── MOBILE MENU ──
   function openMob() { document.getElementById('mobMenu').classList.add('open'); }
   function closeMob() { document.getElementById('mobMenu').classList.remove('open'); }
+</script>
+  <script>
+  (function() {
+    function syncBadge() {
+      try {
+        const cart = JSON.parse(localStorage.getItem('mc_cart') || '[]');
+        const qty = cart.reduce((s,i) => s + i.qty, 0);
+        const bagIcon = document.querySelector('.hicon .fa-shopping-bag');
+        if (bagIcon) {
+          const badge = bagIcon.closest('.hicon').querySelector('.badge');
+          if (badge) {
+            badge.textContent = qty > 99 ? '99+' : qty;
+            badge.style.display = qty > 0 ? 'flex' : 'none';
+          }
+        }
+      } catch(e){}
+    }
+    syncBadge();
+    window.addEventListener('storage', syncBadge);
+    window.addEventListener('focus', syncBadge);
+  })();
 </script>
 </body>
 </html>
