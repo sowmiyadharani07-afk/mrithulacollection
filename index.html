@@ -189,9 +189,8 @@
     .ptag.new { background:var(--primary); color:var(--white); }
     .pactions { position:absolute; bottom:0; left:0; right:0; display:flex; transform:translateY(100%); transition:transform .35s; border-radius:0 0 4px 4px; overflow:hidden; }
     .pcard:hover .pactions { transform:translateY(0); }
-    .pactions button { flex:1; padding:12px; background:var(--dark); color:var(--white); font-size:9px; letter-spacing:1.5px; text-transform:uppercase; transition:background .2s; font-weight:600; font-family:var(--font-body); }
-    .pactions button:hover { background:var(--primary); color:var(--white); }
-    .pactions .wbtn { flex:0 0 44px; border-left:1px solid rgba(255,255,255,.15); }
+    .pactions .btn-view { flex:1; padding:13px 16px; background:var(--dark); color:var(--white); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; transition:background .2s; font-weight:700; font-family:var(--font-head); display:flex; align-items:center; justify-content:center; gap:6px; }
+    .pactions .btn-view:hover { background:var(--primary); }
     .pname { font-family:var(--font-head); font-size:16px; font-weight:700; color:var(--dark); margin-bottom:4px; line-height:1.3; }
     .psub { font-size:11px; color:var(--mid); margin-bottom:9px; font-family:var(--font-body); }
     .pprice { display:flex; align-items:center; gap:9px; }
@@ -347,6 +346,71 @@
     }
     #goTop.show { display:flex; }
     #goTop:hover { background:var(--primary-dark); transform:translateY(-3px); }
+
+    /* ══════════════════════════════════
+       PRODUCT POPUP MODAL
+    ══════════════════════════════════ */
+    .modal-ov {
+      position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:9000;
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; visibility:hidden; transition:all .35s; padding:20px;
+      backdrop-filter:blur(4px);
+    }
+    .modal-ov.open { opacity:1; visibility:visible; }
+    .modal-box {
+      background:var(--white); max-width:920px; width:100%;
+      max-height:90vh; overflow-y:auto; border-radius:8px;
+      display:grid; grid-template-columns:1.1fr 1fr;
+      transform:translateY(30px) scale(.97); transition:transform .35s;
+      position:relative;
+    }
+    .modal-ov.open .modal-box { transform:translateY(0) scale(1); }
+    .modal-gallery { position:relative; background:var(--light); border-radius:8px 0 0 8px; overflow:hidden; min-height:480px; }
+    .mgal-slides { display:flex; height:100%; transition:transform .4s ease; }
+    .mgal-slides img { min-width:100%; height:100%; object-fit:cover; flex-shrink:0; }
+    .mgal-prev, .mgal-next {
+      position:absolute; top:50%; transform:translateY(-50%);
+      width:38px; height:38px; background:rgba(0,0,0,.55); color:var(--white);
+      display:flex; align-items:center; justify-content:center; font-size:13px;
+      border-radius:3px; z-index:5; transition:background .2s;
+    }
+    .mgal-prev { left:12px; } .mgal-next { right:12px; }
+    .mgal-prev:hover, .mgal-next:hover { background:var(--primary); }
+    .mgal-thumbs { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); display:flex; gap:7px; z-index:5; }
+    .mgal-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.5); border:2px solid rgba(255,255,255,.8); cursor:pointer; transition:all .25s; }
+    .mgal-dot.on { background:var(--white); transform:scale(1.2); }
+    .modal-badge { position:absolute; top:16px; left:16px; z-index:5; padding:6px 12px; border-radius:3px; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; font-weight:700; font-family:var(--font-head); }
+    .modal-info { padding:40px 36px; display:flex; flex-direction:column; }
+    .modal-cat { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--primary); font-weight:600; margin-bottom:8px; }
+    .modal-name { font-family:var(--font-head); font-size:clamp(22px,3vw,30px); font-weight:800; color:var(--dark); line-height:1.1; margin-bottom:10px; }
+    .modal-sub { font-size:12px; color:var(--mid); margin-bottom:18px; }
+    .modal-price { display:flex; align-items:baseline; gap:10px; margin-bottom:6px; }
+    .modal-price .mnow { font-family:var(--font-head); font-size:28px; font-weight:800; color:var(--dark); }
+    .modal-price .mwas { font-size:15px; color:#bbb; text-decoration:line-through; }
+    .modal-price .moff { font-size:12px; color:#16a34a; font-weight:700; background:#f0fdf4; padding:3px 8px; border-radius:3px; }
+    .modal-tax { font-size:11px; color:var(--mid); margin-bottom:22px; }
+    .modal-divider { width:100%; height:1px; background:#eef0f8; margin:20px 0; }
+    .modal-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--mid); font-weight:600; margin-bottom:10px; }
+    .size-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px; }
+    .size-btn { width:44px; height:44px; border:2px solid #e8eaf0; font-size:12px; font-weight:600; font-family:var(--font-head); color:var(--dark); border-radius:3px; transition:all .2s; display:flex; align-items:center; justify-content:center; }
+    .size-btn:hover { border-color:var(--primary); color:var(--primary); }
+    .size-btn.on { background:var(--dark); color:var(--white); border-color:var(--dark); }
+    .cta-row { display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
+    .btn-buynow { width:100%; padding:16px; background:var(--primary); color:var(--white); font-family:var(--font-head); font-size:12px; letter-spacing:2px; text-transform:uppercase; font-weight:700; border-radius:3px; transition:all .3s; display:flex; align-items:center; justify-content:center; gap:10px; }
+    .btn-buynow:hover { background:var(--primary-dark); transform:translateY(-2px); box-shadow:0 8px 24px rgba(230,57,70,.35); }
+    .btn-addcart { width:100%; padding:15px; background:var(--white); color:var(--dark); font-family:var(--font-head); font-size:12px; letter-spacing:2px; text-transform:uppercase; font-weight:700; border-radius:3px; border:2px solid var(--dark); transition:all .3s; display:flex; align-items:center; justify-content:center; gap:10px; }
+    .btn-addcart:hover { background:var(--dark); color:var(--white); }
+    .modal-perks { display:flex; gap:18px; margin-top:4px; }
+    .mperk { display:flex; align-items:center; gap:6px; font-size:10px; color:var(--mid); font-weight:500; }
+    .mperk i { color:var(--primary); font-size:11px; }
+    .modal-desc { font-size:12.5px; color:#555; line-height:1.9; margin-top:auto; padding-top:16px; border-top:1px solid #eef0f8; }
+    .modal-close { position:absolute; top:14px; right:14px; z-index:10; width:36px; height:36px; background:var(--dark); color:var(--white); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; transition:all .25s; }
+    .modal-close:hover { background:var(--primary); transform:rotate(90deg); }
+    @media(max-width:768px) {
+      .modal-box { grid-template-columns:1fr; }
+      .modal-gallery { min-height:300px; border-radius:8px 8px 0 0; }
+      .modal-info { padding:28px 22px; }
+    }
 
     /* ══════════════════════════════════
        RESPONSIVE
@@ -545,7 +609,7 @@
       <div class="pimg">
         <img src="https://i.ibb.co/6RyhK1C2/Mirthula-collection-set.jpg" alt="Kurta Pant"/>
         <div class="ptag new">New</div>
-        <div class="pactions"><button onclick="window.location.href='order.html?product=Embroidered Anarkali Kurta Pant&price=₹1,899'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+        <div class="pactions"><button class="btn-view" onclick="openModal(event,1)"><i class="fas fa-eye"></i> View</button></div>
       </div>
       <div class="pname">Embroidered Anarkali Kurta Pant</div>
       <div class="psub">Royal Blue · Women's</div>
@@ -555,7 +619,7 @@
       <div class="pimg">
         <img src="https://i.ibb.co/ZRvgyjjk/mirthula-collection-co-ord-set.jpg" alt="Co ord-set"/>
         <div class="ptag">Bestseller</div>
-        <div class="pactions"><button onclick="window.location.href='order.html?product=Co ord-set&price=₹699'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+        <div class="pactions"><button class="btn-view" onclick="openModal(event,2)"><i class="fas fa-eye"></i> View</button></div>
       </div>
       <div class="pname">Co ord-set</div>
       <div class="psub">Cotton Blend Green Printed V-Neck Co-ord Set<br>Daily & Casual Wear</div>
@@ -565,7 +629,7 @@
       <div class="pimg">
         <img src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=500&q=80" alt="Shirt"/>
         <div class="ptag new">New</div>
-        <div class="pactions"><button onclick="window.location.href='order.html?product=Premium Formal Shirt&price=₹799'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+        <div class="pactions"><button class="btn-view" onclick="openModal(event,3)"><i class="fas fa-eye"></i> View</button></div>
       </div>
       <div class="pname">Premium Formal Shirt</div>
       <div class="psub">Sky Blue · Men's</div>
@@ -575,7 +639,7 @@
       <div class="pimg">
         <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80" alt="Bag"/>
         <div class="ptag new">New</div>
-        <div class="pactions"><button onclick="window.location.href='order.html?product=Womens Sling Bag&price=₹699'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+        <div class="pactions"><button class="btn-view" onclick="openModal(event,4)"><i class="fas fa-eye"></i> View</button></div>
       </div>
       <div class="pname">Women's Sling Bag</div>
       <div class="psub">Tan Brown · Accessories</div>
@@ -585,7 +649,7 @@
       <div class="pimg">
         <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=500&q=80" alt="Kids"/>
         <div class="ptag">Trending</div>
-        <div class="pactions"><button onclick="window.location.href='order.html?product=Kids Festive Kurta Set&price=₹599'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+        <div class="pactions"><button class="btn-view" onclick="openModal(event,5)"><i class="fas fa-eye"></i> View</button></div>
       </div>
       <div class="pname">Kids Festive Kurta Set</div>
       <div class="psub">Multi Color · Kids'</div>
@@ -595,7 +659,7 @@
       <div class="pimg">
         <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" alt="Sneakers"/>
         <div class="ptag new">New</div>
-        <div class="pactions"><button onclick="window.location.href='order.html?product=Unisex Running Sneakers&price=₹1,299'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+        <div class="pactions"><button class="btn-view" onclick="openModal(event,6)"><i class="fas fa-eye"></i> View</button></div>
       </div>
       <div class="pname">Unisex Running Sneakers</div>
       <div class="psub">White · Footwear</div>
@@ -605,7 +669,7 @@
       <div class="pimg">
         <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b4d05?w=500&q=80" alt="Jeans"/>
         <div class="ptag">Sale</div>
-        <div class="pactions"><button onclick="window.location.href='order.html?product=Slim Fit Stretch Jeans&price=₹999'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+        <div class="pactions"><button class="btn-view" onclick="openModal(event,7)"><i class="fas fa-eye"></i> View</button></div>
       </div>
       <div class="pname">Slim Fit Stretch Jeans</div>
       <div class="psub">Dark Navy · Men's</div>
@@ -615,7 +679,7 @@
       <div class="pimg">
         <img src="https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80" alt="Kurti"/>
         <div class="ptag new">New</div>
-        <div class="pactions"><button onclick="window.location.href='order.html?product=Anarkali Floral Kurti&price=₹899'">Add to Cart</button><button class="wbtn"><i class="far fa-heart"></i></button></div>
+        <div class="pactions"><button class="btn-view" onclick="openModal(event,8)"><i class="fas fa-eye"></i> View</button></div>
       </div>
       <div class="pname">Anarkali Floral Kurti</div>
       <div class="psub">Pastel Pink · Women's</div>
@@ -874,6 +938,140 @@
     window.addEventListener('focus', syncBadge);
   })();
 </script>
+<!-- ══ PRODUCT POPUP MODAL ══ -->
+<div class="modal-ov" id="modalOv" onclick="closeModalOv(event)">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-gallery" id="mgalWrap">
+      <div class="mgal-slides" id="mgalSlides"></div>
+      <button class="mgal-prev" onclick="mgalDir(-1)"><i class="fas fa-chevron-left"></i></button>
+      <button class="mgal-next" onclick="mgalDir(1)"><i class="fas fa-chevron-right"></i></button>
+      <div class="mgal-thumbs" id="mgalDots"></div>
+      <div class="modal-badge" id="mbadge"></div>
+    </div>
+    <div class="modal-info">
+      <div class="modal-cat" id="mcat"></div>
+      <div class="modal-name" id="mname"></div>
+      <div class="modal-sub" id="msub"></div>
+      <div class="modal-price">
+        <span class="mnow" id="mnow"></span>
+        <span class="mwas" id="mwas"></span>
+        <span class="moff" id="moff"></span>
+      </div>
+      <div class="modal-tax">Inclusive of all taxes · Free shipping above ₹999</div>
+      <div class="modal-divider"></div>
+      <div class="modal-label">Select Size</div>
+      <div class="size-row" id="msizes"></div>
+      <div class="cta-row">
+        <button class="btn-buynow" id="btnBuyNow"><i class="fas fa-bolt"></i> Buy Now</button>
+        <button class="btn-addcart" id="btnAddCart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+      </div>
+      <div class="modal-perks">
+        <div class="mperk"><i class="fas fa-truck"></i> Free Delivery</div>
+        <div class="mperk"><i class="fas fa-undo"></i> 7-Day Return</div>
+        <div class="mperk"><i class="fas fa-shield-alt"></i> Authentic</div>
+      </div>
+      <div class="modal-desc" id="mdesc"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PRODUCT DATA (Featured Pieces) ──
+const featuredProducts = [
+  { id:1, name:"Embroidered Anarkali Kurta Pant", cat:"Women's", sub:"Royal Blue · Women's Ethnic", tag:"New", tagClass:"new", images:["https://i.ibb.co/6RyhK1C2/Mirthula-collection-set.jpg","https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80","https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&q=80"], price:1899, mrp:3999, discount:50, sizes:["XS","S","M","L","XL","XXL"], desc:"A beautifully embroidered Anarkali kurta pant set crafted from premium fabric. Perfect for festive occasions, family gatherings and celebrations. The intricate embroidery and rich royal blue hue exude grace and elegance." },
+  { id:2, name:"Co-ord Set", cat:"Women's", sub:"Cotton Blend Green Printed · Casual Wear", tag:"Bestseller", tagClass:"", images:["https://i.ibb.co/ZRvgyjjk/mirthula-collection-co-ord-set.jpg","https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&q=80","https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80"], price:699, mrp:1999, discount:65, sizes:["XS","S","M","L","XL"], desc:"A trendy V-neck co-ord set in a fresh green print. Made from breathable cotton blend fabric, ideal for daily wear and casual outings. Lightweight, comfortable and effortlessly stylish." },
+  { id:3, name:"Premium Formal Shirt", cat:"Men's", sub:"Sky Blue · Men's", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=500&q=80","https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=500&q=80","https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&q=80"], price:799, mrp:1299, discount:38, sizes:["S","M","L","XL","XXL"], desc:"A sharp sky blue formal shirt made from wrinkle-resistant fabric. Features a classic collar, full button-down front and a regular fit that looks professional all day long." },
+  { id:4, name:"Women's Sling Bag", cat:"Accessories", sub:"Tan Brown · Accessories", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80","https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=80","https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=500&q=80"], price:699, mrp:1299, discount:46, sizes:["One Size"], desc:"A chic tan brown sling bag crafted from vegan leather. Features an adjustable strap, inner zipper pocket and magnetic snap closure. Spacious enough for your daily essentials yet compact and elegant." },
+  { id:5, name:"Kids Festive Kurta Set", cat:"Kids'", sub:"Multi Color · Kids'", tag:"Trending", tagClass:"hot", images:["https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=500&q=80","https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=500&q=80","https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=500&q=80"], price:599, mrp:999, discount:40, sizes:["2-3Y","4-5Y","6-7Y","8-9Y","10-11Y"], desc:"A vibrant festive kurta set for kids, perfect for Diwali, weddings and special occasions. Made from soft cotton with beautiful prints. Easy to wear and comfortable for little ones all day long." },
+  { id:6, name:"Unisex Running Sneakers", cat:"Footwear", sub:"White · Footwear", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80","https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&q=80","https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=500&q=80"], price:1299, mrp:2499, discount:48, sizes:["6","7","8","9","10","11"], desc:"Lightweight and responsive unisex running sneakers with breathable mesh upper and cushioned sole. Suitable for running, gym, and casual everyday wear." },
+  { id:7, name:"Slim Fit Stretch Jeans", cat:"Men's", sub:"Dark Navy · Men's", tag:"Sale", tagClass:"sale", images:["https://images.unsplash.com/photo-1594938298603-c8148c4b4d05?w=500&q=80","https://images.unsplash.com/photo-1604176354204-9268737828e4?w=500&q=80","https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80"], price:999, mrp:1799, discount:44, sizes:["28","30","32","34","36"], desc:"Premium slim-fit stretch jeans in classic dark navy. Made from high-quality denim with just the right amount of stretch for comfort and mobility throughout the day." },
+  { id:8, name:"Anarkali Floral Kurti", cat:"Women's", sub:"Pastel Pink · Women's", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80","https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&q=80","https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80"], price:899, mrp:1499, discount:40, sizes:["XS","S","M","L","XL","XXL"], desc:"A graceful Anarkali floral kurti in soft pastel pink. Crafted from breathable cotton with delicate floral prints. Ideal for day outings, office wear and casual festive occasions." }
+];
+
+function formatFeatPrice(n) { return '₹' + n.toLocaleString('en-IN'); }
+
+let mgalIndex = 0, mgalImages = [], activeProduct = null, selectedSize = '';
+
+function openModal(e, id) {
+  e.stopPropagation();
+  activeProduct = featuredProducts.find(p => p.id === id);
+  if (!activeProduct) return;
+  mgalImages = activeProduct.images;
+  mgalIndex = 0;
+  selectedSize = '';
+
+  document.getElementById('mcat').textContent = activeProduct.cat + ' Collection';
+  document.getElementById('mname').textContent = activeProduct.name;
+  document.getElementById('msub').textContent = activeProduct.sub;
+  document.getElementById('mnow').textContent = formatFeatPrice(activeProduct.price);
+  document.getElementById('mwas').textContent = formatFeatPrice(activeProduct.mrp);
+  document.getElementById('moff').textContent = activeProduct.discount + '% OFF';
+  document.getElementById('mdesc').textContent = activeProduct.desc;
+
+  const badge = document.getElementById('mbadge');
+  badge.textContent = activeProduct.tag;
+  badge.style.background = activeProduct.tagClass === 'new' ? 'var(--primary)' : activeProduct.tagClass === 'sale' ? '#16a34a' : activeProduct.tagClass === 'hot' ? 'var(--accent)' : 'var(--dark)';
+  badge.style.color = activeProduct.tagClass === 'hot' ? 'var(--dark)' : 'var(--white)';
+
+  const slides = document.getElementById('mgalSlides');
+  slides.innerHTML = mgalImages.map(img => `<img src="${img}" alt="${activeProduct.name}"/>`).join('');
+  slides.style.transform = 'translateX(0)';
+  renderMgalDots();
+
+  document.getElementById('msizes').innerHTML = activeProduct.sizes.map(s => `<button class="size-btn" onclick="selectSize(this,'${s}')">${s}</button>`).join('');
+
+  document.getElementById('btnBuyNow').onclick = () => buyNow();
+  document.getElementById('btnAddCart').onclick = () => addToCartModal();
+
+  document.getElementById('modalOv').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOv').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOv(e) { if (e.target === document.getElementById('modalOv')) closeModal(); }
+
+function renderMgalDots() {
+  document.getElementById('mgalDots').innerHTML = mgalImages.map((_,i) => `<div class="mgal-dot ${i===mgalIndex?'on':''}" onclick="mgalGo(${i})"></div>`).join('');
+}
+function mgalDir(dir) { mgalIndex = (mgalIndex + dir + mgalImages.length) % mgalImages.length; mgalApply(); }
+function mgalGo(i) { mgalIndex = i; mgalApply(); }
+function mgalApply() {
+  document.getElementById('mgalSlides').style.transform = `translateX(-${mgalIndex*100}%)`;
+  renderMgalDots();
+}
+
+function selectSize(btn, size) {
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  selectedSize = size;
+}
+
+function buyNow() {
+  if (!selectedSize) { alert('Please select a size first!'); return; }
+  window.location.href = `order.html?product=${encodeURIComponent(activeProduct.name)}&price=${encodeURIComponent(formatFeatPrice(activeProduct.price))}&size=${encodeURIComponent(selectedSize)}`;
+}
+
+function addToCartModal() {
+  if (!selectedSize) { alert('Please select a size first!'); return; }
+  // Add to shared cart system
+  const cart = getCart();
+  const key = activeProduct.id + '_' + selectedSize;
+  const existing = cart.find(i => i.key === key);
+  if (existing) { existing.qty += 1; } else {
+    cart.push({ key, id: activeProduct.id, name: activeProduct.name, price: activeProduct.price, image: activeProduct.images[0], size: selectedSize, qty: 1 });
+  }
+  saveCart(cart); updateBadge();
+  closeModal();
+  openCart();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+
   <!-- CART DRAWER -->
 <div class="cart-ov" id="cartOv" onclick="closeCartOv(event)" style="position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:3000;opacity:0;visibility:hidden;transition:all .35s;backdrop-filter:blur(3px);">
   <div class="cart-drawer" id="cartDrawer" style="position:absolute;top:0;right:0;height:100%;width:390px;max-width:95vw;background:#fff;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);box-shadow:-6px 0 40px rgba(0,0,0,.18);">
