@@ -669,6 +669,9 @@
     <button class="go-pay" onclick="goToPayment()">
       <i class="fas fa-qrcode"></i> &nbsp;Proceed to UPI Payment
     </button>
+    <button class="go-pay" onclick="window.location.href='account.html'" style="margin-top:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);">
+      <i class="fas fa-receipt"></i> &nbsp;View My Orders
+    </button>
   </div>
 </div>
 
@@ -689,6 +692,39 @@
   // 🔴 REPLACE THIS URL with your Google Apps Script Web App URL (see instructions below)
   const SHEET_URL = 'https://script.google.com/macros/s/AKfycbypKoAp8FpyJV9UeqcLpKwLXV3pdJaksdhkayGOXvzVfYRPiQUbIvCbNsCUQ8qvJl6a/exec';
   let orderData = {};
+
+  // ── SAVE ORDER TO localStorage ──
+  function saveOrderToLocalStorage(data) {
+    try {
+      // Generate unique order ID
+      const orderId = 'MC' + Date.now().toString().slice(-8);
+      const newOrder = {
+        orderId,
+        product:  data.product,
+        price:    data.price,
+        size:     data.size,
+        qty:      1,
+        status:   'Placed',
+        date:     new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }),
+        address:  data.address,
+        trackingId: '',
+        courierCode: '',
+        courierName: ''
+      };
+
+      // Save under the logged-in user's email if session exists
+      const session = JSON.parse(localStorage.getItem('mc_session') || 'null');
+      const storageKey = session ? 'mc_orders_' + session.email : 'mc_orders_' + data.email;
+      const orders = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      orders.push(newOrder);
+      localStorage.setItem(storageKey, JSON.stringify(orders));
+
+      // Also save last order ID for reference
+      localStorage.setItem('mc_last_order', orderId);
+    } catch(e) {
+      console.error('Could not save order:', e);
+    }
+  }
 
   function submitOrder() {
     const name    = document.getElementById('fName').value.trim();
@@ -711,6 +747,9 @@
     errEl.classList.remove('show');
 
     orderData = { name, phone, email, address, size, notes, product: productName, price: productPrice };
+
+    // ── Save order to localStorage immediately ──
+    saveOrderToLocalStorage(orderData);
 
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
