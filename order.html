@@ -601,14 +601,6 @@
             <option>Custom / Other</option>
           </select>
         </div>
-        <div class="field-group">
-          <label>Quantity <span class="req">*</span></label>
-          <div class="qty-wrap">
-            <button class="qty-btn" onclick="changeQty(-1)">−</button>
-            <input class="qty-val" id="fQty" type="number" value="1" min="1" max="20" readonly/>
-            <button class="qty-btn" onclick="changeQty(1)">+</button>
-          </div>
-        </div>
       </div>
 
       <div class="field-group">
@@ -693,16 +685,6 @@
   document.getElementById('sumPrice').textContent = productPrice;
   document.getElementById('sumTotal').textContent = productPrice;
 
-  // ── QUANTITY ──
-  function changeQty(delta) {
-    const el = document.getElementById('fQty');
-    let val = parseInt(el.value) + delta;
-    if (val < 1) val = 1;
-    if (val > 20) val = 20;
-    el.value = val;
-    document.getElementById('sumSub').textContent = 'Qty: ' + val;
-  }
-
   // ── GOOGLE SHEETS SUBMIT ──
   // 🔴 REPLACE THIS URL with your Google Apps Script Web App URL (see instructions below)
   const SHEET_URL = 'https://script.google.com/macros/s/AKfycbypKoAp8FpyJV9UeqcLpKwLXV3pdJaksdhkayGOXvzVfYRPiQUbIvCbNsCUQ8qvJl6a/exec';
@@ -714,7 +696,6 @@
     const email   = document.getElementById('fEmail').value.trim();
     const address = document.getElementById('fAddress').value.trim();
     const size    = document.getElementById('fSize').value;
-    const qty     = document.getElementById('fQty').value;
     const notes   = document.getElementById('fNotes').value.trim();
     const errEl   = document.getElementById('errMsg');
 
@@ -729,7 +710,7 @@
     }
     errEl.classList.remove('show');
 
-    orderData = { name, phone, email, address, size, qty, notes, product: productName, price: productPrice };
+    orderData = { name, phone, email, address, size, notes, product: productName, price: productPrice };
 
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
