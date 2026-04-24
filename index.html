@@ -1195,20 +1195,5 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
   window.addEventListener('focus', updateBadge);
   window.addEventListener('storage', updateBadge);
 </script>
-
-<script>
-  // ── USER SESSION ──
-  function goToAccount() {
-    const session = localStorage.getItem('mc_session');
-    window.location.href = session ? 'account.html' : 'login.html';
-  }
-  function checkUserSession() {
-    const session = localStorage.getItem('mc_session');
-    const badge = document.getElementById('userBadge');
-    if (session && badge) badge.style.display = 'flex';
-  }
-  checkUserSession();
-  window.addEventListener('storage', checkUserSession);
-</script>
 </body>
 </html>
