@@ -644,13 +644,12 @@
 
         <!-- UPI App tags -->
         <div class="upi-apps">
-          <span class="ua-label">Pay via:</span>
-          <span class="upi-app">📱 PhonePe</span>
-          <span class="upi-app">🟢 GPay</span>
-          <span class="upi-app">🔵 Paytm</span>
-          <span class="upi-app">🏦 BHIM</span>
-          <span class="upi-app">Any Bank App</span>
-        </div>
+  <span class="ua-label">Pay via:</span>
+  <a class="upi-app" id="link-phonepe" href="#">📱 PhonePe</a>
+  <a class="upi-app" id="link-gpay"    href="#">🟢 GPay</a>
+  <a class="upi-app" id="link-paytm"   href="#">🔵 Paytm</a>
+  <a class="upi-app" id="link-bhim"    href="#">🏦 BHIM</a>
+</div>
 
         <button class="confirm-btn" onclick="confirmPayment()">
           <i class="fas fa-check-circle"></i>
@@ -785,6 +784,21 @@
     step3.classList.add('done');
     step3.querySelector('.step-num').innerHTML = '<i class="fas fa-check" style="font-size:10px;"></i>';
   }
+</script>
+<script>
+  // Build UPI deep links using the payment amount
+  const rawPrice = document.getElementById('payAmount').textContent.replace(/[₹,]/g, '').trim();
+  const upiAmount = parseFloat(rawPrice) || 0;
+  const upiId   = '9363565732@yescred';
+  const upiName = 'Mrithula Collection';
+  const upiNote = 'Order Payment';
+
+  const baseUPI = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${upiAmount}&cu=INR&tn=${encodeURIComponent(upiNote)}`;
+
+  document.getElementById('link-phonepe').href = `phonepe://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${upiAmount}&cu=INR&tn=${encodeURIComponent(upiNote)}`;
+  document.getElementById('link-gpay').href    = `tez://upi/pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${upiAmount}&cu=INR&tn=${encodeURIComponent(upiNote)}`;
+  document.getElementById('link-paytm').href   = `paytmmp://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${upiAmount}&cu=INR&tn=${encodeURIComponent(upiNote)}`;
+  document.getElementById('link-bhim').href    = baseUPI;
 </script>
 </body>
 </html>
