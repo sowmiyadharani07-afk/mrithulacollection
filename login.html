@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login – Mrithula Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --primary:#e63946; --primary-dark:#c1121f; --primary-light:#ff6b6b;
+      --accent:#f4a261; --accent2:#2ec4b6;
+      --dark:#1a1a2e; --dark2:#16213e; --mid:#6b7280;
+      --light:#f0f4ff; --white:#ffffff; --cream:#fafbff;
+      --font-head:'League Spartan',sans-serif; --font-body:'Poppins',sans-serif;
+    }
+    body { font-family:var(--font-body); background:var(--dark); min-height:100vh; display:flex; flex-direction:column; overflow-x:hidden; }
+    a { text-decoration:none; color:inherit; }
+    button { cursor:pointer; border:none; background:none; font-family:var(--font-body); }
+
+    /* ANNOUNCE */
+    .announce-bar { background:var(--primary); color:rgba(255,255,255,.92); font-size:11px; letter-spacing:1.5px; text-transform:uppercase; text-align:center; padding:9px 20px; font-weight:500; font-family:var(--font-body); }
+    .announce-bar b { color:var(--white); font-weight:700; }
+
+    /* HEADER */
+    header { background:var(--dark); border-bottom:2px solid var(--primary); }
+    .header-inner { max-width:1300px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 40px; height:68px; }
+    .logo-name { font-family:var(--font-head); font-size:22px; font-weight:800; color:var(--white); letter-spacing:3px; text-transform:uppercase; line-height:1; }
+    .logo-tag { font-size:8px; letter-spacing:4px; color:var(--accent); text-transform:uppercase; font-weight:500; font-family:var(--font-body); }
+    .back-link { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,.5); font-family:var(--font-head); font-weight:600; display:flex; align-items:center; gap:8px; transition:color .3s; }
+    .back-link:hover { color:var(--primary-light); }
+
+    /* MAIN WRAP */
+    .auth-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:60px 20px; position:relative; overflow:hidden; }
+    .auth-wrap::before { content:'MC'; font-family:var(--font-head); font-size:500px; font-weight:900; color:rgba(230,57,70,.03); position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; white-space:nowrap; }
+
+    /* CARD */
+    .auth-card { background:var(--dark2); border:1px solid rgba(230,57,70,.2); border-radius:12px; width:100%; max-width:460px; padding:48px 44px; position:relative; z-index:2; box-shadow:0 32px 80px rgba(0,0,0,.6); }
+
+    /* LOGO */
+    .auth-logo { text-align:center; margin-bottom:32px; }
+    .auth-logo .brand { font-family:var(--font-head); font-size:26px; font-weight:900; color:var(--white); letter-spacing:3px; text-transform:uppercase; }
+    .auth-logo .brand span { color:var(--primary); }
+    .auth-logo p { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.3); margin-top:4px; }
+
+    /* TABS */
+    .auth-tabs { display:flex; background:rgba(255,255,255,.05); border-radius:6px; padding:4px; margin-bottom:32px; }
+    .auth-tab { flex:1; padding:11px; text-align:center; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; font-weight:700; font-family:var(--font-head); color:rgba(255,255,255,.35); border-radius:4px; transition:all .3s; cursor:pointer; }
+    .auth-tab.on { background:var(--primary); color:var(--white); box-shadow:0 4px 14px rgba(230,57,70,.4); }
+
+    /* FORMS */
+    .auth-form { display:none; flex-direction:column; gap:16px; }
+    .auth-form.active { display:flex; }
+
+    .form-group { display:flex; flex-direction:column; gap:7px; }
+    .form-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,.45); font-weight:600; font-family:var(--font-head); }
+    .form-input { background:rgba(255,255,255,.05); border:1.5px solid rgba(255,255,255,.1); border-radius:6px; padding:13px 16px; font-size:13px; font-family:var(--font-body); color:var(--white); outline:none; transition:all .3s; width:100%; }
+    .form-input:focus { border-color:var(--primary); background:rgba(230,57,70,.07); }
+    .form-input::placeholder { color:rgba(255,255,255,.18); }
+
+    .input-wrap { position:relative; }
+    .input-wrap .form-input { padding-right:46px; }
+    .eye-btn { position:absolute; right:14px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,.25); font-size:13px; cursor:pointer; transition:color .2s; background:none; border:none; padding:4px; }
+    .eye-btn:hover { color:var(--primary-light); }
+
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+    /* STRENGTH BAR */
+    .strength-bar { height:3px; background:rgba(255,255,255,.08); border-radius:2px; overflow:hidden; margin-top:6px; }
+    .strength-fill { height:100%; width:0%; border-radius:2px; transition:all .4s; }
+
+    /* BUTTONS */
+    .btn-auth { background:var(--primary); color:var(--white); padding:15px; font-size:12px; letter-spacing:2px; text-transform:uppercase; font-weight:700; border-radius:6px; font-family:var(--font-head); transition:all .3s; display:flex; align-items:center; justify-content:center; gap:10px; width:100%; margin-top:4px; }
+    .btn-auth:hover { background:var(--primary-dark); transform:translateY(-2px); box-shadow:0 8px 28px rgba(230,57,70,.45); }
+
+    /* DIVIDER */
+    .form-divider { display:flex; align-items:center; gap:12px; }
+    .form-divider::before, .form-divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,.07); }
+    .form-divider span { font-size:10px; color:rgba(255,255,255,.2); letter-spacing:1px; text-transform:uppercase; }
+
+    .form-note { font-size:11px; color:rgba(255,255,255,.28); text-align:center; line-height:1.8; }
+    .form-note a { color:var(--primary-light); cursor:pointer; }
+    .form-note a:hover { text-decoration:underline; }
+
+    /* MESSAGE */
+    .msg { font-size:12px; padding:12px 16px; border-radius:6px; align-items:center; gap:10px; font-weight:500; display:none; }
+    .msg.success { background:rgba(46,196,182,.12); border:1px solid rgba(46,196,182,.3); color:#2ec4b6; display:flex; }
+    .msg.error { background:rgba(230,57,70,.12); border:1px solid rgba(230,57,70,.3); color:var(--primary-light); display:flex; }
+
+    /* FOOTER */
+    .auth-footer { text-align:center; padding:20px; }
+    .auth-footer p { font-size:11px; color:rgba(255,255,255,.18); }
+
+    @media(max-width:500px) {
+      .auth-card { padding:32px 22px; }
+      .form-row { grid-template-columns:1fr; }
+      .header-inner { padding:0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="announce-bar">Free shipping above <b>₹999</b> &nbsp;·&nbsp; Code <b>MRITHULA10</b> for 10% off</div>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo" style="display:flex;flex-direction:column;align-items:center;">
+      <span class="logo-name">Mrithula</span>
+      <span class="logo-tag">Collection</span>
+    </a>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Store</a>
+  </div>
+</header>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <div class="brand">MRITHULA <span>·</span></div>
+      <p>Customer Account Portal</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab on" onclick="switchTab('login')">Login</button>
+      <button class="auth-tab" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <div class="msg" id="authMsg"></div>
+
+    <!-- LOGIN -->
+    <div class="auth-form active" id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-wrap">
+          <input class="form-input" type="password" id="loginPass" placeholder="Enter your password"/>
+          <button class="eye-btn" onclick="togglePass('loginPass',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <button class="btn-auth" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Login to My Account</button>
+      <div class="form-divider"><span>or</span></div>
+      <p class="form-note">New customer? <a onclick="switchTab('register')">Create an account</a></p>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="auth-form" id="registerForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input class="form-input" type="text" id="regFirst" placeholder="Priya"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input class="form-input" type="text" id="regLast" placeholder="Sharma"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="regEmail" placeholder="your@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input class="form-input" type="tel" id="regPhone" placeholder="+91 98765 43210"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-wrap">
+          <input class="form-input" type="password" id="regPass" placeholder="Min. 6 characters" oninput="checkStrength(this.value)"/>
+          <button class="eye-btn" onclick="togglePass('regPass',this)"><i class="fas fa-eye"></i></button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <div class="input-wrap">
+          <input class="form-input" type="password" id="regConfirm" placeholder="Re-enter password"/>
+          <button class="eye-btn" onclick="togglePass('regConfirm',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <button class="btn-auth" onclick="doRegister()"><i class="fas fa-user-plus"></i> Create My Account</button>
+      <div class="form-divider"><span>or</span></div>
+      <p class="form-note">Already registered? <a onclick="switchTab('login')">Login here</a></p>
+    </div>
+
+  </div>
+</div>
+
+<div class="auth-footer"><p>© 2025 Mrithula Collection. All rights reserved.</p></div>
+
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('on',(tab==='login'&&i===0)||(tab==='register'&&i===1)));
+    document.getElementById('loginForm').classList.toggle('active', tab==='login');
+    document.getElementById('registerForm').classList.toggle('active', tab==='register');
+    hideMsg();
+  }
+  function showMsg(type, text) {
+    const el = document.getElementById('authMsg');
+    const icon = type==='success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+    el.className = 'msg ' + type;
+    el.innerHTML = `<i class="fas ${icon}"></i>&nbsp; ${text}`;
+  }
+  function hideMsg() { const el=document.getElementById('authMsg'); el.className='msg'; el.innerHTML=''; }
+  function togglePass(id, btn) {
+    const inp = document.getElementById(id);
+    const show = inp.type==='password';
+    inp.type = show ? 'text' : 'password';
+    btn.innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+  }
+  function checkStrength(val) {
+    let s=0;
+    if(val.length>=6) s++; if(val.length>=10) s++; if(/[A-Z]/.test(val)) s++; if(/[0-9]/.test(val)) s++; if(/[^A-Za-z0-9]/.test(val)) s++;
+    const f=document.getElementById('strengthFill');
+    f.style.width = val ? ['15%','35%','55%','75%','100%'][s-1]||'10%' : '0%';
+    f.style.background = ['#e63946','#f4a261','#f4a261','#2ec4b6','#16a34a'][s-1]||'#e63946';
+  }
+  function getUsers() { try { return JSON.parse(localStorage.getItem('mc_users')||'[]'); } catch(e){ return []; } }
+  function saveUsers(u) { localStorage.setItem('mc_users', JSON.stringify(u)); }
+  function setSession(u) { localStorage.setItem('mc_session', JSON.stringify(u)); }
+
+  function doLogin() {
+    const email=document.getElementById('loginEmail').value.trim();
+    const pass=document.getElementById('loginPass').value;
+    if(!email||!pass){ showMsg('error','Please fill in all fields.'); return; }
+    const user=getUsers().find(u=>u.email===email&&u.password===pass);
+    if(!user){ showMsg('error','Invalid email or password. Please try again.'); return; }
+    setSession(user);
+    showMsg('success',`Welcome back, ${user.firstName}! Redirecting...`);
+    setTimeout(()=>window.location.href='account.html', 1400);
+  }
+
+  function doRegister() {
+    const firstName=document.getElementById('regFirst').value.trim();
+    const lastName=document.getElementById('regLast').value.trim();
+    const email=document.getElementById('regEmail').value.trim();
+    const phone=document.getElementById('regPhone').value.trim();
+    const pass=document.getElementById('regPass').value;
+    const confirm=document.getElementById('regConfirm').value;
+    if(!firstName||!lastName||!email||!phone||!pass||!confirm){ showMsg('error','Please fill in all fields.'); return; }
+    if(!/\S+@\S+\.\S+/.test(email)){ showMsg('error','Please enter a valid email address.'); return; }
+    if(pass.length<6){ showMsg('error','Password must be at least 6 characters.'); return; }
+    if(pass!==confirm){ showMsg('error','Passwords do not match.'); return; }
+    const users=getUsers();
+    if(users.find(u=>u.email===email)){ showMsg('error','An account with this email already exists.'); return; }
+    const newUser={ firstName, lastName, email, phone, password:pass, joinedDate:new Date().toLocaleDateString('en-IN'), orders:[] };
+    users.push(newUser);
+    saveUsers(users);
+    setSession(newUser);
+    showMsg('success',`Welcome, ${firstName}! Account created. Redirecting...`);
+    setTimeout(()=>window.location.href='account.html', 1400);
+  }
+
+  // If already logged in, go to account
+  if(localStorage.getItem('mc_session')) window.location.href='account.html';
+
+  // Enter key support
+  document.addEventListener('keydown', e => {
+    if(e.key!=='Enter') return;
+    if(document.getElementById('loginForm').classList.contains('active')) doLogin();
+    else doRegister();
+  });
+</script>
+</body>
+</html>
