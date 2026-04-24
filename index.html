@@ -476,7 +476,10 @@
   <i class="fas fa-shopping-bag"></i>
   <div class="badge" id="cartBadge" style="display:none;">0</div>
 </div>
-      <div class="hicon"><i class="fas fa-user"></i></div>
+      <div class="hicon" id="userIcon" onclick="goToAccount()" title="My Account" style="position:relative;">
+        <i class="fas fa-user"></i>
+        <div class="badge" id="userBadge" style="display:none;background:var(--accent2);font-size:7px;padding:2px;">✓</div>
+      </div>
       <button class="ham" onclick="openMob()"><i class="fas fa-bars"></i></button>
     </div>
   </div>
@@ -1194,6 +1197,21 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
   updateBadge();
   window.addEventListener('focus', updateBadge);
   window.addEventListener('storage', updateBadge);
+</script>
+
+<script>
+  // ── USER SESSION ──
+  function goToAccount() {
+    const session = localStorage.getItem('mc_session');
+    window.location.href = session ? 'account.html' : 'login.html';
+  }
+  function checkUserSession() {
+    const session = localStorage.getItem('mc_session');
+    const badge = document.getElementById('userBadge');
+    if (session && badge) badge.style.display = 'flex';
+  }
+  checkUserSession();
+  window.addEventListener('storage', checkUserSession);
 </script>
 </body>
 </html>
