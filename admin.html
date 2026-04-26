@@ -160,15 +160,30 @@
     .export-note { font-size:11px; color:var(--mid); margin-top:10px; line-height:1.7; background:var(--light); padding:12px 14px; border-radius:6px; border-left:3px solid var(--primary); }
 
     @media(max-width:900px) {
-      .panel-grid { grid-template-columns:1fr; }
-      .stats-row { grid-template-columns:repeat(2,1fr); }
-      .form-row, .form-row-3 { grid-template-columns:1fr; }
-    }
-    @media(max-width:500px) {
-      .stats-row { grid-template-columns:1fr 1fr; }
-      .topbar { padding:0 16px; }
-      .content { padding:20px 14px; }
-    }
+  .panel-grid { grid-template-columns:1fr; }
+  .stats-row { grid-template-columns:repeat(2,1fr); }
+  .form-row, .form-row-3 { grid-template-columns:1fr; }
+}
+@media(max-width:600px) {
+  .prod-item { flex-wrap:wrap; gap:10px; }
+  .prod-info { min-width:0; flex:1 1 60%; }
+  .prod-price { flex:0 0 auto; }
+  .prod-actions { width:100%; display:flex; gap:8px; }
+  .btn-edit, .btn-delete { flex:1; justify-content:center; padding:10px; font-size:11px; }
+  .prod-thumb { width:50px; height:50px; }
+  .prod-name { font-size:13px; white-space:normal; }
+  .list-toolbar { flex-wrap:wrap; }
+  .tb-brand span.badge { display:none; }
+  .tb-btn span { display:none; }
+}
+@media(max-width:500px) {
+  .stats-row { grid-template-columns:1fr 1fr; }
+  .topbar { padding:0 16px; }
+  .content { padding:20px 14px; }
+  .stat-card { padding:16px; }
+  .stat-val { font-size:22px; }
+  .card-head { flex-wrap:wrap; gap:10px; }
+}
   </style>
 </head>
 <body>
