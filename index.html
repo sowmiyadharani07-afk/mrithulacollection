@@ -1210,21 +1210,30 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
   window.addEventListener('storage', updateBadge);
 </script>
   <script>
-  function toggleSearch() {
-    document.getElementById('searchWrap').classList.toggle('open');
-    if (document.getElementById('searchWrap').classList.contains('open')) {
-      setTimeout(() => document.getElementById('searchInput').focus(), 350);
-    } else {
+ function toggleSearch() {
+    const wrap = document.getElementById('searchWrap');
+    const isOpen = wrap.classList.contains('open');
+    if (isOpen) {
       closeSearch();
+    } else {
+      wrap.classList.add('open');
+      setTimeout(() => document.getElementById('searchInput').focus(), 350);
     }
   }
   function closeSearch() {
-    document.getElementById('searchWrap').classList.remove('open');
-    document.getElementById('searchInput').value = '';
+    const wrap = document.getElementById('searchWrap');
+    wrap.classList.remove('open');
+    const input = document.getElementById('searchInput');
+    input.value = '';
     doSearch('');
+    // Show all cards back
+    document.querySelectorAll('.pcard').forEach(c => c.classList.remove('hidden'));
+    const noRes = document.getElementById('noResults');
+    if (noRes) noRes.classList.remove('show');
   }
 function doSearch(query) {
     const q = query.toLowerCase().trim();
+  if (q) document.getElementById('products').scrollIntoView({ behavior:'smooth', block:'start' });
     const cards = document.querySelectorAll('.pcard');
     let found = 0;
     cards.forEach(card => {
