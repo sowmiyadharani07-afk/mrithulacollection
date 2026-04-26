@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel – Mrithula Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --primary:#e63946; --primary-dark:#c1121f; --primary-light:#ff6b6b;
+      --accent:#f4a261; --accent2:#2ec4b6;
+      --dark:#1a1a2e; --dark2:#16213e; --mid:#6b7280;
+      --light:#f0f4ff; --white:#ffffff;
+      --green:#16a34a; --green-light:#f0fdf4;
+      --font-head:'League Spartan',sans-serif; --font-body:'Poppins',sans-serif;
+    }
+    body { font-family:var(--font-body); background:#f4f6fb; min-height:100vh; }
+    a { text-decoration:none; color:inherit; }
+    button { cursor:pointer; border:none; font-family:var(--font-body); }
+    input, select, textarea { font-family:var(--font-body); }
+
+    /* ══ LOGIN SCREEN ══ */
+    .login-screen { position:fixed; inset:0; background:var(--dark); display:flex; align-items:center; justify-content:center; z-index:9999; }
+    .login-box { background:var(--dark2); border:1px solid rgba(230,57,70,.25); border-radius:12px; padding:48px 44px; width:100%; max-width:400px; text-align:center; }
+    .login-logo { font-family:var(--font-head); font-size:24px; font-weight:900; color:var(--white); letter-spacing:3px; margin-bottom:6px; }
+    .login-sub { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:32px; }
+    .login-icon { font-size:48px; color:var(--primary); margin-bottom:20px; }
+    .login-input { width:100%; background:rgba(255,255,255,.06); border:1.5px solid rgba(255,255,255,.12); border-radius:6px; padding:14px 18px; font-size:14px; color:var(--white); outline:none; margin-bottom:14px; transition:border .3s; text-align:center; letter-spacing:3px; }
+    .login-input:focus { border-color:var(--primary); }
+    .login-input::placeholder { letter-spacing:1px; color:rgba(255,255,255,.2); }
+    .login-btn { width:100%; background:var(--primary); color:var(--white); padding:14px; border-radius:6px; font-family:var(--font-head); font-size:12px; letter-spacing:2px; text-transform:uppercase; font-weight:700; transition:all .3s; }
+    .login-btn:hover { background:var(--primary-dark); }
+    .login-err { font-size:12px; color:var(--primary-light); margin-top:10px; display:none; }
+
+    /* ══ MAIN LAYOUT ══ */
+    .admin-wrap { display:none; min-height:100vh; }
+    .admin-wrap.show { display:block; }
+
+    /* TOPBAR */
+    .topbar { background:var(--dark); border-bottom:2px solid var(--primary); padding:0 32px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+    .tb-brand { font-family:var(--font-head); font-size:18px; font-weight:900; color:var(--white); letter-spacing:2px; display:flex; align-items:center; gap:10px; }
+    .tb-brand .badge { background:var(--primary); color:var(--white); font-size:9px; padding:3px 8px; border-radius:3px; letter-spacing:1px; }
+    .tb-right { display:flex; align-items:center; gap:16px; }
+    .tb-btn { padding:8px 18px; border-radius:5px; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; font-family:var(--font-head); font-weight:700; transition:all .3s; display:flex; align-items:center; gap:7px; }
+    .tb-btn.outline { background:rgba(255,255,255,.08); color:rgba(255,255,255,.6); border:1px solid rgba(255,255,255,.15); }
+    .tb-btn.outline:hover { background:rgba(255,255,255,.15); color:var(--white); }
+    .tb-btn.danger { background:rgba(230,57,70,.15); color:var(--primary-light); border:1px solid rgba(230,57,70,.3); }
+    .tb-btn.danger:hover { background:var(--primary); color:var(--white); }
+
+    /* CONTENT */
+    .content { max-width:1200px; margin:0 auto; padding:36px 24px; }
+
+    /* STATS */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+    .stat-card { background:var(--white); border-radius:10px; padding:22px 24px; border:1px solid #e8eaf0; display:flex; align-items:center; gap:16px; }
+    .stat-icon { width:48px; height:48px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .si-red { background:rgba(230,57,70,.1); color:var(--primary); }
+    .si-green { background:rgba(22,163,74,.1); color:var(--green); }
+    .si-blue { background:rgba(37,99,235,.1); color:#2563eb; }
+    .si-orange { background:rgba(244,162,97,.1); color:var(--accent); }
+    .stat-val { font-family:var(--font-head); font-size:28px; font-weight:900; color:var(--dark); line-height:1; }
+    .stat-lbl { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--mid); margin-top:4px; }
+
+    /* PANEL GRID */
+    .panel-grid { display:grid; grid-template-columns:1fr 1.6fr; gap:24px; align-items:start; }
+
+    /* FORM CARD */
+    .card { background:var(--white); border-radius:12px; border:1px solid #e8eaf0; overflow:hidden; }
+    .card-head { padding:20px 24px; border-bottom:1px solid #f0f2f8; display:flex; align-items:center; justify-content:space-between; }
+    .card-title { font-family:var(--font-head); font-size:16px; font-weight:800; color:var(--dark); display:flex; align-items:center; gap:8px; }
+    .card-title i { color:var(--primary); }
+    .card-body { padding:24px; }
+
+    .form-group { margin-bottom:16px; }
+    .form-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--mid); font-weight:600; font-family:var(--font-head); display:block; margin-bottom:7px; }
+    .form-input, .form-select, .form-textarea { width:100%; background:var(--light); border:1.5px solid #e0e4f0; border-radius:6px; padding:11px 14px; font-size:13px; color:var(--dark); outline:none; transition:all .3s; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--primary); background:#fff5f5; }
+    .form-textarea { resize:vertical; min-height:90px; line-height:1.6; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .form-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+
+    /* IMAGE INPUTS */
+    .img-input-group { display:flex; flex-direction:column; gap:8px; }
+    .img-input-row { display:flex; gap:8px; align-items:center; }
+    .img-input-row .form-input { flex:1; }
+    .img-thumb { width:40px; height:40px; border-radius:5px; object-fit:cover; border:1px solid #e0e4f0; display:none; flex-shrink:0; }
+    .img-thumb.show { display:block; }
+
+    /* SIZES */
+    .size-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
+    .size-chip { padding:6px 14px; border:2px solid #e0e4f0; border-radius:5px; font-size:11px; font-weight:600; color:var(--mid); cursor:pointer; transition:all .2s; font-family:var(--font-head); }
+    .size-chip.on { background:var(--dark); color:var(--white); border-color:var(--dark); }
+    .size-custom { display:flex; gap:8px; margin-top:8px; }
+    .size-custom .form-input { flex:1; }
+    .size-custom button { background:var(--dark); color:var(--white); padding:10px 16px; border-radius:6px; font-size:12px; font-family:var(--font-head); font-weight:700; transition:background .2s; }
+    .size-custom button:hover { background:var(--primary); }
+
+    /* SUBMIT BUTTONS */
+    .btn-submit { width:100%; background:var(--primary); color:var(--white); padding:14px; border-radius:6px; font-family:var(--font-head); font-size:12px; letter-spacing:2px; text-transform:uppercase; font-weight:700; transition:all .3s; display:flex; align-items:center; justify-content:center; gap:10px; margin-top:8px; }
+    .btn-submit:hover { background:var(--primary-dark); transform:translateY(-2px); box-shadow:0 8px 24px rgba(230,57,70,.35); }
+    .btn-reset { width:100%; background:var(--light); color:var(--mid); padding:12px; border-radius:6px; font-family:var(--font-head); font-size:11px; letter-spacing:1.5px; text-transform:uppercase; font-weight:700; transition:all .3s; margin-top:8px; }
+    .btn-reset:hover { background:#e0e4f0; color:var(--dark); }
+
+    /* PRODUCT LIST */
+    .prod-list { display:flex; flex-direction:column; gap:12px; }
+    .prod-item { background:var(--white); border:1px solid #e8eaf0; border-radius:10px; padding:16px 18px; display:flex; align-items:center; gap:14px; transition:box-shadow .3s; }
+    .prod-item:hover { box-shadow:0 4px 16px rgba(0,0,0,.08); }
+    .prod-thumb { width:60px; height:60px; border-radius:8px; object-fit:cover; border:1px solid #eee; flex-shrink:0; background:var(--light); }
+    .prod-info { flex:1; min-width:0; }
+    .prod-name { font-family:var(--font-head); font-size:14px; font-weight:700; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .prod-meta { font-size:11px; color:var(--mid); margin-top:3px; display:flex; gap:12px; flex-wrap:wrap; }
+    .prod-price { font-family:var(--font-head); font-size:15px; font-weight:800; color:var(--primary); flex-shrink:0; }
+    .prod-actions { display:flex; gap:8px; flex-shrink:0; }
+    .btn-edit { background:rgba(37,99,235,.1); color:#2563eb; padding:7px 14px; border-radius:5px; font-size:10px; letter-spacing:1px; text-transform:uppercase; font-family:var(--font-head); font-weight:700; transition:all .2s; display:flex; align-items:center; gap:5px; }
+    .btn-edit:hover { background:#2563eb; color:var(--white); }
+    .btn-delete { background:rgba(230,57,70,.1); color:var(--primary); padding:7px 14px; border-radius:5px; font-size:10px; letter-spacing:1px; text-transform:uppercase; font-family:var(--font-head); font-weight:700; transition:all .2s; display:flex; align-items:center; gap:5px; }
+    .btn-delete:hover { background:var(--primary); color:var(--white); }
+
+    /* SEARCH BAR */
+    .list-toolbar { display:flex; gap:12px; margin-bottom:16px; align-items:center; }
+    .list-search { flex:1; background:var(--light); border:1.5px solid #e0e4f0; border-radius:6px; padding:10px 14px; font-size:13px; color:var(--dark); outline:none; transition:border .3s; }
+    .list-search:focus { border-color:var(--primary); }
+    .list-count { font-size:11px; color:var(--mid); white-space:nowrap; font-family:var(--font-head); font-weight:600; }
+
+    /* TAG BADGES */
+    .tag-badge { padding:3px 9px; border-radius:3px; font-size:9px; letter-spacing:1px; text-transform:uppercase; font-weight:700; font-family:var(--font-head); }
+    .tag-new { background:rgba(230,57,70,.12); color:var(--primary); }
+    .tag-sale { background:rgba(22,163,74,.12); color:var(--green); }
+    .tag-hot { background:rgba(244,162,97,.2); color:#b45309; }
+    .tag-bs { background:rgba(37,99,235,.1); color:#2563eb; }
+
+    /* TOAST */
+    .toast { position:fixed; bottom:28px; right:28px; background:var(--dark); color:var(--white); padding:14px 22px; border-radius:8px; font-size:13px; font-weight:500; display:flex; align-items:center; gap:10px; box-shadow:0 8px 28px rgba(0,0,0,.3); z-index:9999; transform:translateY(100px); opacity:0; transition:all .4s cubic-bezier(.4,0,.2,1); }
+    .toast.show { transform:translateY(0); opacity:1; }
+    .toast.success i { color:var(--accent2); }
+    .toast.error i { color:var(--primary-light); }
+
+    /* EMPTY */
+    .empty-list { text-align:center; padding:48px 20px; color:var(--mid); }
+    .empty-list i { font-size:40px; color:#dde1f0; display:block; margin-bottom:12px; }
+
+    /* CONFIRM MODAL */
+    .confirm-ov { position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:8000; display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden; transition:all .3s; backdrop-filter:blur(4px); }
+    .confirm-ov.open { opacity:1; visibility:visible; }
+    .confirm-box { background:var(--white); border-radius:12px; padding:36px; max-width:380px; width:90%; text-align:center; transform:scale(.95); transition:transform .3s; }
+    .confirm-ov.open .confirm-box { transform:scale(1); }
+    .confirm-icon { font-size:44px; color:var(--primary); margin-bottom:16px; }
+    .confirm-title { font-family:var(--font-head); font-size:20px; font-weight:800; color:var(--dark); margin-bottom:8px; }
+    .confirm-sub { font-size:13px; color:var(--mid); line-height:1.6; margin-bottom:24px; }
+    .confirm-btns { display:flex; gap:12px; }
+    .confirm-btns button { flex:1; padding:12px; border-radius:6px; font-family:var(--font-head); font-size:11px; letter-spacing:1.5px; text-transform:uppercase; font-weight:700; transition:all .3s; }
+    .confirm-cancel { background:var(--light); color:var(--mid); }
+    .confirm-cancel:hover { background:#e0e4f0; }
+    .confirm-ok { background:var(--primary); color:var(--white); }
+    .confirm-ok:hover { background:var(--primary-dark); }
+
+    /* EXPORT */
+    .export-note { font-size:11px; color:var(--mid); margin-top:10px; line-height:1.7; background:var(--light); padding:12px 14px; border-radius:6px; border-left:3px solid var(--primary); }
+
+    @media(max-width:900px) {
+      .panel-grid { grid-template-columns:1fr; }
+      .stats-row { grid-template-columns:repeat(2,1fr); }
+      .form-row, .form-row-3 { grid-template-columns:1fr; }
+    }
+    @media(max-width:500px) {
+      .stats-row { grid-template-columns:1fr 1fr; }
+      .topbar { padding:0 16px; }
+      .content { padding:20px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-icon"><i class="fas fa-shield-alt"></i></div>
+    <div class="login-logo">MRITHULA</div>
+    <div class="login-sub">Admin Panel · Secure Access</div>
+    <input class="login-input" type="password" id="adminPass" placeholder="Enter Admin Password" autocomplete="off"/>
+    <button class="login-btn" onclick="doAdminLogin()"><i class="fas fa-unlock"></i> &nbsp;Access Panel</button>
+    <div class="login-err" id="loginErr">❌ Wrong password. Try again.</div>
+  </div>
+</div>
+
+<!-- ══ ADMIN WRAP ══ -->
+<div class="admin-wrap" id="adminWrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="tb-brand">
+      <i class="fas fa-store" style="color:var(--primary);"></i>
+      MRITHULA <span class="badge">ADMIN</span>
+    </div>
+    <div class="tb-right">
+      <a href="products.html" target="_blank" class="tb-btn outline"><i class="fas fa-external-link-alt"></i> View Store</a>
+      <button class="tb-btn danger" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- STATS -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card"><div class="stat-icon si-red"><i class="fas fa-box"></i></div><div><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Total Products</div></div></div>
+      <div class="stat-card"><div class="stat-icon si-green"><i class="fas fa-tag"></i></div><div><div class="stat-val" id="statSale">0</div><div class="stat-lbl">On Sale</div></div></div>
+      <div class="stat-card"><div class="stat-icon si-blue"><i class="fas fa-female"></i></div><div><div class="stat-val" id="statWomen">0</div><div class="stat-lbl">Women's</div></div></div>
+      <div class="stat-card"><div class="stat-icon si-orange"><i class="fas fa-male"></i></div><div><div class="stat-val" id="statMen">0</div><div class="stat-lbl">Men's</div></div></div>
+    </div>
+
+    <div class="panel-grid">
+
+      <!-- ══ ADD / EDIT FORM ══ -->
+      <div class="card" id="formCard">
+        <div class="card-head">
+          <div class="card-title"><i class="fas fa-plus-circle"></i> <span id="formTitle">Add New Product</span></div>
+          <button class="tb-btn outline" onclick="resetForm()" style="padding:6px 12px;font-size:9px;"><i class="fas fa-redo"></i> Reset</button>
+        </div>
+        <div class="card-body">
+
+          <!-- NAME -->
+          <div class="form-group">
+            <label class="form-label">Product Name *</label>
+            <input class="form-input" type="text" id="fName" placeholder="e.g. Embroidered Anarkali Kurta"/>
+          </div>
+
+          <!-- CAT + TAG -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select class="form-select" id="fCat">
+                <option value="women">Women's</option>
+                <option value="men">Men's</option>
+                <option value="kids">Kids'</option>
+                <option value="accessories">Accessories</option>
+                <option value="footwear">Footwear</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Badge Tag</label>
+              <select class="form-select" id="fTag" onchange="syncTagClass()">
+                <option value="New">New</option>
+                <option value="Bestseller">Bestseller</option>
+                <option value="Trending">Trending</option>
+                <option value="Sale">Sale</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- SUBTITLE -->
+          <div class="form-group">
+            <label class="form-label">Subtitle <span style="font-weight:400;text-transform:none;letter-spacing:0;">(Color · Category)</span></label>
+            <input class="form-input" type="text" id="fSub" placeholder="e.g. Royal Blue · Women's Ethnic"/>
+          </div>
+
+          <!-- PRICE -->
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label">Price (₹) *</label>
+              <input class="form-input" type="number" id="fPrice" placeholder="1899" oninput="calcDiscount()"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">MRP (₹) *</label>
+              <input class="form-input" type="number" id="fMrp" placeholder="3999" oninput="calcDiscount()"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Discount</label>
+              <input class="form-input" type="text" id="fDiscount" placeholder="Auto" readonly style="background:#f8f9ff;color:var(--green);font-weight:700;"/>
+            </div>
+          </div>
+
+          <!-- IMAGES -->
+          <div class="form-group">
+            <label class="form-label">Image URLs <span style="font-weight:400;text-transform:none;letter-spacing:0;">(paste image links)</span></label>
+            <div class="img-input-group">
+              <div class="img-input-row">
+                <input class="form-input" type="url" id="fImg1" placeholder="Image 1 URL (main)" oninput="previewImg(this,'thumb1')"/>
+                <img id="thumb1" class="img-thumb" src="" alt=""/>
+              </div>
+              <div class="img-input-row">
+                <input class="form-input" type="url" id="fImg2" placeholder="Image 2 URL" oninput="previewImg(this,'thumb2')"/>
+                <img id="thumb2" class="img-thumb" src="" alt=""/>
+              </div>
+              <div class="img-input-row">
+                <input class="form-input" type="url" id="fImg3" placeholder="Image 3 URL" oninput="previewImg(this,'thumb3')"/>
+                <img id="thumb3" class="img-thumb" src="" alt=""/>
+              </div>
+            </div>
+          </div>
+
+          <!-- SIZES -->
+          <div class="form-group">
+            <label class="form-label">Sizes</label>
+            <div class="size-chips" id="sizeChips">
+              <div class="size-chip" onclick="toggleSize(this,'XS')">XS</div>
+              <div class="size-chip" onclick="toggleSize(this,'S')">S</div>
+              <div class="size-chip" onclick="toggleSize(this,'M')">M</div>
+              <div class="size-chip" onclick="toggleSize(this,'L')">L</div>
+              <div class="size-chip" onclick="toggleSize(this,'XL')">XL</div>
+              <div class="size-chip" onclick="toggleSize(this,'XXL')">XXL</div>
+              <div class="size-chip" onclick="toggleSize(this,'28')">28</div>
+              <div class="size-chip" onclick="toggleSize(this,'30')">30</div>
+              <div class="size-chip" onclick="toggleSize(this,'32')">32</div>
+              <div class="size-chip" onclick="toggleSize(this,'34')">34</div>
+              <div class="size-chip" onclick="toggleSize(this,'36')">36</div>
+              <div class="size-chip" onclick="toggleSize(this,'Free Size')">Free Size</div>
+              <div class="size-chip" onclick="toggleSize(this,'One Size')">One Size</div>
+              <div class="size-chip" onclick="toggleSize(this,'2-3Y')">2-3Y</div>
+              <div class="size-chip" onclick="toggleSize(this,'4-5Y')">4-5Y</div>
+              <div class="size-chip" onclick="toggleSize(this,'6-7Y')">6-7Y</div>
+            </div>
+            <div class="size-custom">
+              <input class="form-input" type="text" id="customSize" placeholder="Add custom size..."/>
+              <button onclick="addCustomSize()"><i class="fas fa-plus"></i> Add</button>
+            </div>
+          </div>
+
+          <!-- IS SALE -->
+          <div class="form-group">
+            <label class="form-label">Sale Item?</label>
+            <select class="form-select" id="fIsSale">
+              <option value="false">No</option>
+              <option value="true">Yes — show in Sale filter</option>
+            </select>
+          </div>
+
+          <!-- DESCRIPTION -->
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="fDesc" placeholder="Write a short product description..."></textarea>
+          </div>
+
+          <input type="hidden" id="fEditId" value=""/>
+          <button class="btn-submit" onclick="saveProduct()"><i class="fas fa-save"></i> <span id="btnLabel">Save Product</span></button>
+          <button class="btn-reset" onclick="resetForm()"><i class="fas fa-times"></i> Cancel / Reset</button>
+
+          <div class="export-note">
+            <i class="fas fa-info-circle" style="color:var(--primary);"></i>
+            After adding products here, click <b>"Export to Code"</b> in the product list and paste the generated code into your <b>products.html</b> file to make products live on your site.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PRODUCT LIST ══ -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="fas fa-list"></i> All Products</div>
+          <button class="tb-btn outline" onclick="exportCode()" style="padding:6px 14px;font-size:9px;background:rgba(22,163,74,.1);color:var(--green);border-color:rgba(22,163,74,.3);">
+            <i class="fas fa-code"></i> Export to Code
+          </button>
+        </div>
+        <div class="card-body" style="padding:16px;">
+          <div class="list-toolbar">
+            <input class="list-search" type="text" placeholder="Search products..." oninput="filterList(this.value)" id="listSearch"/>
+            <span class="list-count" id="listCount">0 products</span>
+          </div>
+          <div class="prod-list" id="prodList"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="confirm-ov" id="confirmOv">
+  <div class="confirm-box">
+    <div class="confirm-icon"><i class="fas fa-trash-alt"></i></div>
+    <div class="confirm-title">Delete Product?</div>
+    <div class="confirm-sub" id="confirmSub">This action cannot be undone.</div>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="confirm-ok" id="confirmOkBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastMsg"></span></div>
+
+<!-- EXPORT MODAL -->
+<div class="confirm-ov" id="exportOv" onclick="if(event.target===this)closeExport()">
+  <div class="confirm-box" style="max-width:600px;text-align:left;">
+    <div style="font-family:var(--font-head);font-size:18px;font-weight:800;color:var(--dark);margin-bottom:12px;display:flex;align-items:center;gap:8px;"><i class="fas fa-code" style="color:var(--primary);"></i> Export Product Code</div>
+    <p style="font-size:12px;color:var(--mid);margin-bottom:12px;line-height:1.7;">Copy this code and replace the <code style="background:#f0f4ff;padding:2px 6px;border-radius:3px;">const products = [...]</code> array in your <b>products.html</b> file.</p>
+    <textarea id="exportArea" style="width:100%;height:220px;background:#1a1a2e;color:#a8d8a8;font-family:monospace;font-size:11px;padding:14px;border-radius:8px;border:none;outline:none;resize:none;line-height:1.6;"></textarea>
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button onclick="copyExport()" style="flex:1;background:var(--primary);color:var(--white);padding:12px;border-radius:6px;font-family:var(--font-head);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border:none;"><i class="fas fa-copy"></i> Copy Code</button>
+      <button onclick="closeExport()" style="flex:1;background:var(--light);color:var(--mid);padding:12px;border-radius:6px;font-family:var(--font-head);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;cursor:pointer;border:none;">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ══════════════════════════════════════
+  // ADMIN PASSWORD
+  // ══════════════════════════════════════
+  const ADMIN_PASSWORD = 'mrithula@admin';
+
+  function doAdminLogin() {
+    const val = document.getElementById('adminPass').value;
+    if (val === ADMIN_PASSWORD) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminWrap').classList.add('show');
+      localStorage.setItem('mc_admin_auth', '1');
+      renderAll();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+      document.getElementById('adminPass').value = '';
+      setTimeout(() => document.getElementById('loginErr').style.display = 'none', 3000);
+    }
+  }
+  function doLogout() {
+    localStorage.removeItem('mc_admin_auth');
+    location.reload();
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') doAdminLogin();
+  });
+  // Auto-login if session exists
+  if (localStorage.getItem('mc_admin_auth') === '1') {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminWrap').classList.add('show');
+  }
+
+  // ══════════════════════════════════════
+  // DEFAULT PRODUCTS (from products.html)
+  // ══════════════════════════════════════
+  const defaultProducts = [
+    { id:1, name:"Embroidered Anarkali Kurta Pant", cat:"women", sub:"Royal Blue · Women's Ethnic", tag:"New", tagClass:"new", images:["https://i.ibb.co/6RyhK1C2/Mirthula-collection-set.jpg","https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80","https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&q=80"], price:1899, mrp:3999, discount:50, sizes:["XS","S","M","L","XL","XXL"], desc:"A beautifully embroidered Anarkali kurta pant set crafted from premium fabric. Perfect for festive occasions, family gatherings and celebrations.", isSale:true },
+    { id:2, name:"Co-ord Set", cat:"women", sub:"Cotton Blend Green Printed · Casual Wear", tag:"Bestseller", tagClass:"", images:["https://i.ibb.co/ZRvgyjjk/mirthula-collection-co-ord-set.jpg","https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&q=80","https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80"], price:699, mrp:1999, discount:65, sizes:["XS","S","M","L","XL"], desc:"A trendy V-neck co-ord set in a fresh green print. Made from breathable cotton blend fabric, ideal for daily wear and casual outings.", isSale:true },
+    { id:3, name:"Premium Formal Shirt", cat:"men", sub:"Sky Blue · Men's", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=500&q=80","https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=500&q=80","https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&q=80"], price:799, mrp:1299, discount:38, sizes:["S","M","L","XL","XXL"], desc:"A sharp sky blue formal shirt made from wrinkle-resistant fabric. Features a classic collar and regular fit that looks professional all day.", isSale:false },
+    { id:4, name:"Women's Sling Bag", cat:"accessories", sub:"Tan Brown · Accessories", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80","https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=80","https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=500&q=80"], price:699, mrp:1299, discount:46, sizes:["One Size"], desc:"A chic tan brown sling bag crafted from vegan leather. Adjustable strap, inner zipper pocket and magnetic snap closure.", isSale:false },
+    { id:5, name:"Kids Festive Kurta Set", cat:"kids", sub:"Multi Color · Kids'", tag:"Trending", tagClass:"hot", images:["https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=500&q=80","https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=500&q=80","https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=500&q=80"], price:599, mrp:999, discount:40, sizes:["2-3Y","4-5Y","6-7Y","8-9Y","10-11Y"], desc:"A vibrant festive kurta set for kids, perfect for Diwali, weddings and special occasions.", isSale:false },
+    { id:6, name:"Unisex Running Sneakers", cat:"footwear", sub:"White · Footwear", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80","https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&q=80","https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=500&q=80"], price:1299, mrp:2499, discount:48, sizes:["6","7","8","9","10","11"], desc:"Lightweight and responsive unisex running sneakers with breathable mesh upper and cushioned sole.", isSale:false },
+    { id:7, name:"Slim Fit Stretch Jeans", cat:"men", sub:"Dark Navy · Men's", tag:"Sale", tagClass:"sale", images:["https://images.unsplash.com/photo-1594938298603-c8148c4b4d05?w=500&q=80","https://images.unsplash.com/photo-1604176354204-9268737828e4?w=500&q=80","https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80"], price:999, mrp:1799, discount:44, sizes:["28","30","32","34","36","38"], desc:"Premium slim fit jeans in a deep navy wash. Made from 4-way stretch denim for maximum comfort.", isSale:true },
+    { id:8, name:"Anarkali Floral Kurti", cat:"women", sub:"Pastel Pink · Women's", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80","https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&q=80","https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=500&q=80"], price:899, mrp:1499, discount:40, sizes:["XS","S","M","L","XL","XXL"], desc:"A graceful Anarkali floral kurti in soft pastel pink with delicate floral prints.", isSale:false },
+    { id:9, name:"Printed Kurta Suit Set", cat:"women", sub:"Beige Multiprint · Women's", tag:"Bestseller", tagClass:"", images:["https://i.ibb.co/SWNL3sc/Beige-and-Brown-Modern-Fashion-Style-Poster-1.png","https://images.unsplash.com/photo-1551303989-8d4a3f33e56c?w=500&q=80","https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=500&q=80"], price:1199, mrp:2499, discount:52, sizes:["XS","S","M","L","XL"], desc:"A tastefully printed kurta suit set in warm beige tones with matching dupatta and palazzo pants.", isSale:true },
+    { id:10, name:"Trendy Casual Shirt", cat:"men", sub:"Navy Stripe · Men's", tag:"Trending", tagClass:"hot", images:["https://i.ibb.co/LzsQ1jJd/Untitled-design.png","https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=500&q=80","https://images.unsplash.com/photo-1613394524767-1d1a7c2b46c0?w=500&q=80"], price:649, mrp:1099, discount:41, sizes:["S","M","L","XL","XXL"], desc:"A stylish navy stripe casual shirt perfect for weekends and outings.", isSale:false },
+    { id:11, name:"Sleepwear Lounge Set", cat:"women", sub:"Lavender Floral · Women's", tag:"New", tagClass:"new", images:["https://i.ibb.co/hRVmGpCb/Untitled-design-1.png","https://images.unsplash.com/photo-1616628188859-7a11abb6fcc9?w=500&q=80","https://images.unsplash.com/photo-1583744946564-b52ac1c389c8?w=500&q=80"], price:549, mrp:999, discount:45, sizes:["XS","S","M","L","XL"], desc:"A dreamy lavender floral sleepwear lounge set made from ultra-soft cotton.", isSale:false },
+    { id:12, name:"Kids Trending Fashion Set", cat:"kids", sub:"Bright Printed · Kids'", tag:"Trending", tagClass:"hot", images:["https://i.ibb.co/HLnJgPgZ/Kids-Fashion.png","https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=500&q=80","https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=500&q=80"], price:499, mrp:899, discount:44, sizes:["2-3Y","4-5Y","6-7Y","8-9Y"], desc:"A fun and colourful fashion set for kids with vibrant prints and playful designs.", isSale:false },
+    { id:13, name:"Bags & Jewellery Combo", cat:"accessories", sub:"Gold Tone · Accessories", tag:"Bestseller", tagClass:"", images:["https://i.ibb.co/nMJ3JVxJ/Untitled-design-2.png","https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&q=80","https://images.unsplash.com/photo-1516762689617-e1cffcef479d?w=500&q=80"], price:1099, mrp:2499, discount:56, sizes:["One Size"], desc:"An elegant gold-tone bag and jewellery combo set, curated for ethnic occasions.", isSale:true },
+    { id:14, name:"Men's Ethnic Kurta Set", cat:"men", sub:"Off-White · Men's Festive", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1604030033107-c25f7e1fa98e?w=500&q=80","https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=500&q=80","https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?w=500&q=80"], price:1499, mrp:2999, discount:50, sizes:["S","M","L","XL","XXL"], desc:"A premium off-white ethnic kurta set with intricate self-embroidery and mandarin collar.", isSale:true },
+    { id:15, name:"Georgette Saree", cat:"women", sub:"Deep Maroon · Women's Festive", tag:"Sale", tagClass:"sale", images:["https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&q=80","https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500&q=80","https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=500&q=80"], price:1799, mrp:3999, discount:55, sizes:["Free Size"], desc:"A stunning deep maroon georgette saree with rich zari border and embroidered pallu.", isSale:true },
+    { id:16, name:"Lehenga Choli Set", cat:"women", sub:"Royal Pink · Women's Bridal", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=500&q=80","https://images.unsplash.com/photo-1551303989-8d4a3f33e56c?w=500&q=80","https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80"], price:3499, mrp:7999, discount:56, sizes:["XS","S","M","L","XL","Custom"], desc:"A breathtaking royal pink lehenga choli set adorned with mirror work and sequin embellishments.", isSale:false }
+  ];
+
+  // ══════════════════════════════════════
+  // STORAGE
+  // ══════════════════════════════════════
+  function getProducts() {
+    try {
+      const stored = localStorage.getItem('mc_admin_products');
+      return stored ? JSON.parse(stored) : [...defaultProducts];
+    } catch(e) { return [...defaultProducts]; }
+  }
+  function saveProducts(arr) { localStorage.setItem('mc_admin_products', JSON.stringify(arr)); }
+  function nextId(arr) { return arr.length ? Math.max(...arr.map(p=>p.id)) + 1 : 1; }
+
+  // ══════════════════════════════════════
+  // RENDER
+  // ══════════════════════════════════════
+  function renderAll() {
+    renderStats();
+    renderList('');
+  }
+
+  function renderStats() {
+    const p = getProducts();
+    document.getElementById('statTotal').textContent = p.length;
+    document.getElementById('statSale').textContent = p.filter(x=>x.isSale).length;
+    document.getElementById('statWomen').textContent = p.filter(x=>x.cat==='women').length;
+    document.getElementById('statMen').textContent = p.filter(x=>x.cat==='men').length;
+  }
+
+  function renderList(query) {
+    const all = getProducts();
+    const q = query.toLowerCase().trim();
+    const filtered = q ? all.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q) || p.sub.toLowerCase().includes(q)) : all;
+    document.getElementById('listCount').textContent = `${filtered.length} product${filtered.length!==1?'s':''}`;
+    const list = document.getElementById('prodList');
+    if (!filtered.length) {
+      list.innerHTML = `<div class="empty-list"><i class="fas fa-search"></i><p>No products found</p></div>`;
+      return;
+    }
+    const tagMap = { new:'tag-new', sale:'tag-sale', hot:'tag-hot', '':'tag-bs' };
+    list.innerHTML = filtered.map(p => `
+      <div class="prod-item" id="pi-${p.id}">
+        <img class="prod-thumb" src="${p.images[0]}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/60x60?text=IMG'"/>
+        <div class="prod-info">
+          <div class="prod-name">${p.name} &nbsp;<span class="tag-badge ${tagMap[p.tagClass]||'tag-bs'}">${p.tag}</span></div>
+          <div class="prod-meta">
+            <span><i class="fas fa-folder" style="font-size:9px;"></i> ${p.cat}</span>
+            <span><i class="fas fa-ruler" style="font-size:9px;"></i> ${p.sizes.join(', ')}</span>
+            ${p.isSale ? '<span style="color:var(--green);"><i class="fas fa-tag" style="font-size:9px;"></i> On Sale</span>' : ''}
+          </div>
+        </div>
+        <div class="prod-price">₹${p.price.toLocaleString('en-IN')}</div>
+        <div class="prod-actions">
+          <button class="btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i> Edit</button>
+          <button class="btn-delete" onclick="confirmDelete(${p.id},'${p.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterList(q) { renderList(q); }
+
+  // ══════════════════════════════════════
+  // FORM HELPERS
+  // ══════════════════════════════════════
+  let selectedSizes = [];
+
+  function toggleSize(chip, size) {
+    chip.classList.toggle('on');
+    if (chip.classList.contains('on')) {
+      if (!selectedSizes.includes(size)) selectedSizes.push(size);
+    } else {
+      selectedSizes = selectedSizes.filter(s => s !== size);
+    }
+  }
+
+  function addCustomSize() {
+    const val = document.getElementById('customSize').value.trim();
+    if (!val) return;
+    if (!selectedSizes.includes(val)) {
+      selectedSizes.push(val);
+      const chip = document.createElement('div');
+      chip.className = 'size-chip on';
+      chip.textContent = val;
+      chip.onclick = () => toggleSize(chip, val);
+      document.getElementById('sizeChips').appendChild(chip);
+    }
+    document.getElementById('customSize').value = '';
+  }
+
+  function calcDiscount() {
+    const price = parseFloat(document.getElementById('fPrice').value);
+    const mrp = parseFloat(document.getElementById('fMrp').value);
+    if (price && mrp && mrp > price) {
+      const disc = Math.round(((mrp - price) / mrp) * 100);
+      document.getElementById('fDiscount').value = disc + '% OFF';
+    } else {
+      document.getElementById('fDiscount').value = '';
+    }
+  }
+
+  function syncTagClass() {
+    const tag = document.getElementById('fTag').value;
+    // tagClass is auto-set on save
+  }
+
+  function previewImg(input, thumbId) {
+    const thumb = document.getElementById(thumbId);
+    if (input.value) {
+      thumb.src = input.value;
+      thumb.classList.add('show');
+      thumb.onerror = () => thumb.classList.remove('show');
+    } else {
+      thumb.classList.remove('show');
+    }
+  }
+
+  function resetForm() {
+    document.getElementById('fName').value = '';
+    document.getElementById('fSub').value = '';
+    document.getElementById('fPrice').value = '';
+    document.getElementById('fMrp').value = '';
+    document.getElementById('fDiscount').value = '';
+    document.getElementById('fImg1').value = '';
+    document.getElementById('fImg2').value = '';
+    document.getElementById('fImg3').value = '';
+    document.getElementById('fDesc').value = '';
+    document.getElementById('fEditId').value = '';
+    document.getElementById('fCat').value = 'women';
+    document.getElementById('fTag').value = 'New';
+    document.getElementById('fIsSale').value = 'false';
+    document.getElementById('formTitle').textContent = 'Add New Product';
+    document.getElementById('btnLabel').textContent = 'Save Product';
+    selectedSizes = [];
+    ['thumb1','thumb2','thumb3'].forEach(id => {
+      const t = document.getElementById(id);
+      t.src = ''; t.classList.remove('show');
+    });
+    document.querySelectorAll('.size-chip').forEach(c => c.classList.remove('on'));
+  }
+
+  // ══════════════════════════════════════
+  // SAVE PRODUCT
+  // ══════════════════════════════════════
+  function saveProduct() {
+    const name = document.getElementById('fName').value.trim();
+    const price = parseFloat(document.getElementById('fPrice').value);
+    const mrp = parseFloat(document.getElementById('fMrp').value);
+    const img1 = document.getElementById('fImg1').value.trim();
+
+    if (!name) { showToast('error', 'Product name is required!'); return; }
+    if (!price || !mrp) { showToast('error', 'Price and MRP are required!'); return; }
+    if (!img1) { showToast('error', 'At least 1 image URL is required!'); return; }
+    if (selectedSizes.length === 0) { showToast('error', 'Please select at least one size!'); return; }
+
+    const tag = document.getElementById('fTag').value;
+    const tagClassMap = { 'New':'new', 'Sale':'sale', 'Trending':'hot', 'Bestseller':'' };
+    const discount = Math.round(((mrp - price) / mrp) * 100);
+
+    const images = [img1, document.getElementById('fImg2').value.trim(), document.getElementById('fImg3').value.trim()].filter(Boolean);
+
+    const products = getProducts();
+    const editId = document.getElementById('fEditId').value;
+
+    const productData = {
+      name,
+      cat: document.getElementById('fCat').value,
+      sub: document.getElementById('fSub').value.trim(),
+      tag,
+      tagClass: tagClassMap[tag] ?? '',
+      images,
+      price,
+      mrp,
+      discount,
+      sizes: selectedSizes,
+      desc: document.getElementById('fDesc').value.trim(),
+      isSale: document.getElementById('fIsSale').value === 'true'
+    };
+
+    if (editId) {
+      const idx = products.findIndex(p => p.id === parseInt(editId));
+      if (idx !== -1) { productData.id = parseInt(editId); products[idx] = productData; }
+      showToast('success', `"${name}" updated successfully!`);
+    } else {
+      productData.id = nextId(products);
+      products.push(productData);
+      showToast('success', `"${name}" added successfully!`);
+    }
+
+    saveProducts(products);
+    resetForm();
+    renderAll();
+    document.getElementById('prodList').scrollIntoView({ behavior:'smooth' });
+  }
+
+  // ══════════════════════════════════════
+  // EDIT
+  // ══════════════════════════════════════
+  function editProduct(id) {
+    const p = getProducts().find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('fName').value = p.name;
+    document.getElementById('fSub').value = p.sub;
+    document.getElementById('fPrice').value = p.price;
+    document.getElementById('fMrp').value = p.mrp;
+    document.getElementById('fDiscount').value = p.discount + '% OFF';
+    document.getElementById('fImg1').value = p.images[0] || '';
+    document.getElementById('fImg2').value = p.images[1] || '';
+    document.getElementById('fImg3').value = p.images[2] || '';
+    document.getElementById('fDesc').value = p.desc || '';
+    document.getElementById('fCat').value = p.cat;
+    document.getElementById('fTag').value = p.tag;
+    document.getElementById('fIsSale').value = p.isSale ? 'true' : 'false';
+    document.getElementById('fEditId').value = p.id;
+    document.getElementById('formTitle').textContent = 'Edit Product';
+    document.getElementById('btnLabel').textContent = 'Update Product';
+
+    // Previews
+    ['fImg1','fImg2','fImg3'].forEach((id,i) => {
+      const inp = document.getElementById(id);
+      const thumb = document.getElementById('thumb'+(i+1));
+      if (inp.value) { thumb.src = inp.value; thumb.classList.add('show'); }
+      else { thumb.classList.remove('show'); }
+    });
+
+    // Sizes
+    selectedSizes = [...p.sizes];
+    document.querySelectorAll('.size-chip').forEach(chip => {
+      chip.classList.toggle('on', p.sizes.includes(chip.textContent));
+    });
+
+    document.getElementById('formCard').scrollIntoView({ behavior:'smooth' });
+  }
+
+  // ══════════════════════════════════════
+  // DELETE
+  // ══════════════════════════════════════
+  let deleteTargetId = null;
+  function confirmDelete(id, name) {
+    deleteTargetId = id;
+    document.getElementById('confirmSub').textContent = `Are you sure you want to delete "${name}"? This cannot be undone.`;
+    document.getElementById('confirmOv').classList.add('open');
+    document.getElementById('confirmOkBtn').onclick = () => {
+      const products = getProducts().filter(p => p.id !== deleteTargetId);
+      saveProducts(products);
+      closeConfirm();
+      renderAll();
+      showToast('success', 'Product deleted successfully!');
+    };
+  }
+  function closeConfirm() { document.getElementById('confirmOv').classList.remove('open'); }
+
+  // ══════════════════════════════════════
+  // EXPORT
+  // ══════════════════════════════════════
+  function exportCode() {
+    const products = getProducts();
+    const code = `const products = ${JSON.stringify(products, null, 2)};`;
+    document.getElementById('exportArea').value = code;
+    document.getElementById('exportOv').classList.add('open');
+  }
+  function closeExport() { document.getElementById('exportOv').classList.remove('open'); }
+  function copyExport() {
+    const area = document.getElementById('exportArea');
+    area.select();
+    document.execCommand('copy');
+    showToast('success', 'Code copied! Paste it in your products.html');
+  }
+
+  // ══════════════════════════════════════
+  // TOAST
+  // ══════════════════════════════════════
+  function showToast(type, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    t.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Init
+  if (localStorage.getItem('mc_admin_auth') === '1') renderAll();
+</script>
+</body>
+</html>
