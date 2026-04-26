@@ -1200,7 +1200,14 @@ window.addEventListener('scroll', () => {
 function openMob() { document.getElementById('mobMenu').classList.add('open'); }
 function closeMob() { document.getElementById('mobMenu').classList.remove('open'); }
 
-// INIT
+// INIT — Load from Admin Panel if available
+const adminProducts = localStorage.getItem('mc_admin_products');
+if (adminProducts) {
+  try {
+    const parsed = JSON.parse(adminProducts);
+    if (parsed && parsed.length) products.splice(0, products.length, ...parsed);
+  } catch(e) {}
+}
 renderGrid();
 updateBadge();
 </script>
