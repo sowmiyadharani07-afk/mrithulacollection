@@ -1223,17 +1223,34 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
     document.getElementById('searchInput').value = '';
     doSearch('');
   }
-  function doSearch(query) {
+function doSearch(query) {
     const q = query.toLowerCase().trim();
     const cards = document.querySelectorAll('.pcard');
     let found = 0;
     cards.forEach(card => {
       const name = card.querySelector('.pname')?.textContent.toLowerCase() || '';
       const cat  = card.querySelector('.ptag')?.textContent.toLowerCase() || '';
-      const match = !q || name.includes(q) || cat.includes(q);
+      const sub  = card.querySelector('.psub')?.textContent.toLowerCase() || '';
+      const match = !q || name.includes(q) || cat.includes(q) || sub.includes(q);
       card.classList.toggle('hidden', !match);
       if (match) found++;
     });
+
+    // Show "no results" message if nothing found
+    let noRes = document.getElementById('noResults');
+    if (!noRes) {
+      noRes = document.createElement('div');
+      noRes.id = 'noResults';
+      noRes.className = 'no-results';
+      noRes.innerHTML = '<i class="fas fa-search" style="font-size:32px;display:block;margin-bottom:12px;color:#ddd;"></i> No products found for "<strong id="noResQuery"></strong>"';
+      document.querySelector('.prod-grid').appendChild(noRes);
+    }
+    if (q && found === 0) {
+      document.getElementById('noResQuery').textContent = query;
+      noRes.classList.add('show');
+    } else {
+      noRes.classList.remove('show');
+    }
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
 </script>
