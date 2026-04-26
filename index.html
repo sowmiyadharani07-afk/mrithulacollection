@@ -32,6 +32,18 @@
     ul { list-style: none; }
     button { cursor: pointer; border: none; background: none; font-family: var(--font-body); }
 
+    /* ══ SEARCH BAR ══ */
+.search-bar-wrap { position:absolute; top:0; left:0; right:0; height:100%; background:var(--dark); display:flex; align-items:center; padding:0 40px; gap:14px; transform:translateY(-100%); transition:transform .35s; z-index:200; }
+.search-bar-wrap.open { transform:translateY(0); }
+.search-bar-input { flex:1; background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.15); border-radius:6px; padding:10px 18px; font-size:14px; color:var(--white); font-family:var(--font-body); outline:none; transition:border .3s; }
+.search-bar-input:focus { border-color:var(--primary); }
+.search-bar-input::placeholder { color:rgba(255,255,255,.3); }
+.search-close { color:rgba(255,255,255,.5); font-size:18px; transition:color .2s; background:none; border:none; cursor:pointer; padding:6px; }
+.search-close:hover { color:var(--primary-light); }
+.pcard.hidden { display:none; }
+.no-results { display:none; text-align:center; padding:60px 20px; font-size:14px; color:var(--mid); grid-column:1/-1; }
+.no-results.show { display:block; }
+
     /* ══════════════════════════════════
        ANNOUNCEMENT BAR
     ══════════════════════════════════ */
@@ -470,7 +482,11 @@
       <a href="#products" class="sale-link">Sale</a>
     </nav>
     <div class="hicons">
-      <div class="hicon"><i class="fas fa-search"></i></div>
+      <div class="hicon" onclick="toggleSearch()" title="Search"><i class="fas fa-search"></i></div>
+      <div class="search-bar-wrap" id="searchWrap">
+        <input type="text" id="searchInput" class="search-bar-input" placeholder="Search products..." oninput="doSearch(this.value)" autocomplete="off"/>
+        <button class="search-close" onclick="closeSearch()"><i class="fas fa-times"></i></button>
+      </div>
       <div class="hicon" onclick="openCart()" style="position:relative;cursor:pointer;">
   <i class="fas fa-shopping-bag"></i>
   <div class="badge" id="cartBadge" style="display:none;">0</div>
@@ -1192,6 +1208,34 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
   updateBadge();
   window.addEventListener('focus', updateBadge);
   window.addEventListener('storage', updateBadge);
+</script>
+  <script>
+  function toggleSearch() {
+    document.getElementById('searchWrap').classList.toggle('open');
+    if (document.getElementById('searchWrap').classList.contains('open')) {
+      setTimeout(() => document.getElementById('searchInput').focus(), 350);
+    } else {
+      closeSearch();
+    }
+  }
+  function closeSearch() {
+    document.getElementById('searchWrap').classList.remove('open');
+    document.getElementById('searchInput').value = '';
+    doSearch('');
+  }
+  function doSearch(query) {
+    const q = query.toLowerCase().trim();
+    const cards = document.querySelectorAll('.pcard');
+    let found = 0;
+    cards.forEach(card => {
+      const name = card.querySelector('.pname')?.textContent.toLowerCase() || '';
+      const cat  = card.querySelector('.ptag')?.textContent.toLowerCase() || '';
+      const match = !q || name.includes(q) || cat.includes(q);
+      card.classList.toggle('hidden', !match);
+      if (match) found++;
+    });
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
 </script>
 </body>
 </html>
