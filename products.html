@@ -1201,10 +1201,9 @@ function openMob() { document.getElementById('mobMenu').classList.add('open'); }
 function closeMob() { document.getElementById('mobMenu').classList.remove('open'); }
 
 // INIT — Load from Google Sheet (all devices sync)
-const SHEET_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxBVJ6xIPVSutVAgaS8q2lLO4wS61A5FbNDbzj2a6zZTNWTIXy0HJnk5ZjjDvkpDvI/exec';
 
 function loadProducts() {
-  // First render with local/default data instantly
   const local = localStorage.getItem('mc_admin_products');
   if (local) {
     try {
@@ -1214,6 +1213,22 @@ function loadProducts() {
   }
   renderGrid();
   updateBadge();
+
+  fetch(SHEET_URL)
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.length) {
+        products.splice(0, products.length, ...data);
+        localStorage.setItem('mc_admin_products', JSON.stringify(data));
+        renderGrid();
+      }
+    })
+    .catch(() => {
+      console.log('Using local product data');
+    });
+}
+
+loadProducts();
 
   // Then fetch latest from Google Sheet in background
   fetch(SHEET_URL)
