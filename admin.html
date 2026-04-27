@@ -524,12 +524,12 @@
     const tagMap = { new:'tag-new', sale:'tag-sale', hot:'tag-hot', '':'tag-bs' };
     list.innerHTML = filtered.map(p => `
       <div class="prod-item" id="pi-${p.id}">
-        <img class="prod-thumb" src="${p.images[0]}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/60x60?text=IMG'"/>
+        <img class="prod-thumb" src="${Array.isArray(p.images) ? p.images[0] : JSON.parse(p.images||'[]')[0]}"
         <div class="prod-info">
           <div class="prod-name">${p.name} &nbsp;<span class="tag-badge ${tagMap[p.tagClass]||'tag-bs'}">${p.tag}</span></div>
           <div class="prod-meta">
             <span><i class="fas fa-folder" style="font-size:9px;"></i> ${p.cat}</span>
-            <span><i class="fas fa-ruler" style="font-size:9px;"></i> ${p.sizes.join(', ')}</span>
+            <span><i class="fas fa-ruler" style="font-size:9px;"></i> ${(Array.isArray(p.sizes) ? p.sizes : JSON.parse(p.sizes||'[]')).join(', ')}</span>
             ${p.isSale ? '<span style="color:var(--green);"><i class="fas fa-tag" style="font-size:9px;"></i> On Sale</span>' : ''}
           </div>
         </div>
