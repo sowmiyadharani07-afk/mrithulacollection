@@ -870,12 +870,12 @@ function renderGrid() {
     <div class="pcard" data-id="${p.id}">
       <div class="pimg">
         <div class="img-slides" id="is-${p.id}">
-          ${p.images.map(img => `<img src="${img}" alt="${p.name}" loading="lazy"/>`).join('')}
+          ${(Array.isArray(p.images) ? p.images : JSON.parse(p.images||'[]')).map(img => `<img src="${img}" alt="${p.name}" loading="lazy"/>`).join('')}
         </div>
         <button class="img-prev" onclick="cardImgDir(event,${p.id},-1)"><i class="fas fa-chevron-left"></i></button>
         <button class="img-next" onclick="cardImgDir(event,${p.id},1)"><i class="fas fa-chevron-right"></i></button>
         <div class="img-dots" id="id-${p.id}">
-          ${p.images.map((_,i) => `<div class="img-dot ${i===0?'on':''}" onclick="cardImgGo(event,${p.id},${i})"></div>`).join('')}
+          ${(Array.isArray(p.images) ? p.images : JSON.parse(p.images||'[]')).map((_,i) => `<div class="img-dot ${i===0?'on':''}" onclick="cardImgGo(event,${p.id},${i})"></div>`).join('')}
         </div>
         <div class="ptag ${p.tagClass}">${p.tag}</div>
         <div class="pactions">
