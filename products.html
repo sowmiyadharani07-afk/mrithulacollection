@@ -1200,36 +1200,37 @@ window.addEventListener('scroll', () => {
 function openMob() { document.getElementById('mobMenu').classList.add('open'); }
 function closeMob() { document.getElementById('mobMenu').classList.remove('open'); }
 
-// INIT — Load products (Sheet → localStorage → default)
+// INIT — Load products safely
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxBVJ6xIPVSutVAgaS8q2lLO4wS61A5FbNDbzj2a6zZTNWTIXy0HJnk5ZjjDvkpDvI/exec';
 
 function loadProducts() {
-  // Step 1: Load local or default first (instant render)
+  // Step 1: Try localStorage first (instant render)
   const local = localStorage.getItem('mc_admin_products');
   if (local) {
     try {
       const parsed = JSON.parse(local);
-      if (parsed && parsed.length) products.splice(0, products.length, ...parsed);
+      if (parsed && parsed.length) {
+        products.splice(0, products.length, ...parsed);
+      }
     } catch(e) {}
   }
   renderGrid();
   updateBadge();
 
-  // Step 2: Try fetching from Google Sheet in background
+  // Step 2: Fetch from Google Sheet in background
   fetch(SHEET_URL)
     .then(res => res.json())
     .then(data => {
-      // Only update if sheet has valid data with at least 1 product
+      // Only update if sheet has REAL valid products
       if (data && Array.isArray(data) && data.length > 0 && data[0].name) {
         products.splice(0, products.length, ...data);
         localStorage.setItem('mc_admin_products', JSON.stringify(data));
         renderGrid();
       }
-      // If sheet is empty — keep showing local/default products
+      // If empty sheet — keep showing local/default products ✅
     })
     .catch(() => {
-      // Network error — keep showing local/default products
-      console.log('Using local/default product data');
+      // Network fail — keep showing local/default products ✅
     });
 }
 
