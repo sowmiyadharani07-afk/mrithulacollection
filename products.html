@@ -1200,16 +1200,38 @@ window.addEventListener('scroll', () => {
 function openMob() { document.getElementById('mobMenu').classList.add('open'); }
 function closeMob() { document.getElementById('mobMenu').classList.remove('open'); }
 
-// INIT — Load from Admin Panel if available
-const adminProducts = localStorage.getItem('mc_admin_products');
-if (adminProducts) {
-  try {
-    const parsed = JSON.parse(adminProducts);
-    if (parsed && parsed.length) products.splice(0, products.length, ...parsed);
-  } catch(e) {}
+// INIT — Load from Google Sheet (all devices sync)
+const SHEET_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
+
+function loadProducts() {
+  // First render with local/default data instantly
+  const local = localStorage.getItem('mc_admin_products');
+  if (local) {
+    try {
+      const parsed = JSON.parse(local);
+      if (parsed && parsed.length) products.splice(0, products.length, ...parsed);
+    } catch(e) {}
+  }
+  renderGrid();
+  updateBadge();
+
+  // Then fetch latest from Google Sheet in background
+  fetch(SHEET_URL)
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.length) {
+        products.splice(0, products.length, ...data);
+        localStorage.setItem('mc_admin_products', JSON.stringify(data));
+        renderGrid();
+      }
+    })
+    .catch(() => {
+      // Sheet fetch failed — already rendered with local data above
+      console.log('Using local product data');
+    });
 }
-renderGrid();
-updateBadge();
+
+loadProducts();
 </script>
   <script>
   function toggleSearch() {
