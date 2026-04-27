@@ -624,63 +624,219 @@
 
 <script>
 // ════════════════════════════════════════
-// GOOGLE SHEET — JSONP LOADER
+// PRODUCT DATA
 // ════════════════════════════════════════
-const SHEET_API = 'https://script.google.com/macros/s/AKfycbz1dFMHz5-r588bpWHNLyDUDrG62baVXmezpbfN10UeueVofVVfMNN9N5PBhtRlV-Wp/exec';
-let products = [];
+const products = [
+  {
+    id: 1, name: "Embroidered Anarkali Kurta Pant", cat: "women", sub: "Royal Blue · Women's Ethnic",
+    tag: "New", tagClass: "new",
+    images: [
+      "https://i.ibb.co/6RyhK1C2/Mirthula-collection-set.jpg",
+      "https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80",
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&q=80"
+    ],
+    price: 1899, mrp: 3999, discount: 50,
+    sizes: ["XS","S","M","L","XL","XXL"],
+    desc: "A beautifully embroidered Anarkali kurta pant set crafted from premium fabric. Perfect for festive occasions, family gatherings and celebrations. The intricate embroidery and rich royal blue hue exude grace and elegance.",
+    isSale: true
+  },
+  {
+    id: 2, name: "Co-ord Set", cat: "women", sub: "Cotton Blend Green Printed · Casual Wear",
+    tag: "Bestseller", tagClass: "",
+    images: [
+      "https://i.ibb.co/ZRvgyjjk/mirthula-collection-co-ord-set.jpg",
+      "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&q=80",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80"
+    ],
+    price: 699, mrp: 1999, discount: 65,
+    sizes: ["XS","S","M","L","XL"],
+    desc: "A trendy V-neck co-ord set in a fresh green print. Made from breathable cotton blend fabric, ideal for daily wear and casual outings. Lightweight, comfortable and effortlessly stylish.",
+    isSale: true
+  },
+  {
+    id: 3, name: "Premium Formal Shirt", cat: "men", sub: "Sky Blue · Men's",
+    tag: "New", tagClass: "new",
+    images: [
+      "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=500&q=80",
+      "https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=500&q=80",
+      "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&q=80"
+    ],
+    price: 799, mrp: 1299, discount: 38,
+    sizes: ["S","M","L","XL","XXL"],
+    desc: "A sharp sky blue formal shirt made from wrinkle-resistant fabric. Features a classic collar, full button-down front and a regular fit that looks professional all day long. Pair with trousers or chinos.",
+    isSale: false
+  },
+  {
+    id: 4, name: "Women's Sling Bag", cat: "accessories", sub: "Tan Brown · Accessories",
+    tag: "New", tagClass: "new",
+    images: [
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80",
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=80",
+      "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=500&q=80"
+    ],
+    price: 699, mrp: 1299, discount: 46,
+    sizes: ["One Size"],
+    desc: "A chic tan brown sling bag crafted from vegan leather. Features an adjustable strap, inner zipper pocket and magnetic snap closure. Spacious enough for your daily essentials yet compact and elegant.",
+    isSale: true
+  },
+  {
+    id: 5, name: "Kids Festive Kurta Set", cat: "kids", sub: "Multi Color · Kids'",
+    tag: "Trending", tagClass: "hot",
+    images: [
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=500&q=80",
+      "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=500&q=80",
+      "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=500&q=80"
+    ],
+    price: 599, mrp: 999, discount: 40,
+    sizes: ["2-3Y","4-5Y","6-7Y","8-9Y","10-11Y"],
+    desc: "A vibrant festive kurta set for kids, perfect for Diwali, weddings and special occasions. Made from soft cotton with beautiful prints. Easy to wear and comfortable for little ones all day long.",
+    isSale: false
+  },
+  {
+    id: 6, name: "Unisex Running Sneakers", cat: "accessories", sub: "White · Footwear",
+    tag: "New", tagClass: "new",
+    images: [
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80",
+      "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=500&q=80",
+      "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=500&q=80"
+    ],
+    price: 1299, mrp: 2499, discount: 48,
+    sizes: ["UK 6","UK 7","UK 8","UK 9","UK 10","UK 11"],
+    desc: "Lightweight and versatile unisex running sneakers in classic white. Features a cushioned sole, breathable mesh upper and a lace-up design. Perfect for workouts, walks and casual everyday use.",
+    isSale: true
+  },
+  {
+    id: 7, name: "Slim Fit Stretch Jeans", cat: "men", sub: "Dark Navy · Men's",
+    tag: "Sale", tagClass: "sale",
+    images: [
+      "https://images.unsplash.com/photo-1594938298603-c8148c4b4d05?w=500&q=80",
+      "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80",
+      "https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?w=500&q=80"
+    ],
+    price: 999, mrp: 1799, discount: 44,
+    sizes: ["28","30","32","34","36","38"],
+    desc: "Premium slim fit jeans in a deep navy wash. Made from 4-way stretch denim for maximum comfort and mobility. Features a mid-rise waist, five-pocket design and tapered leg for a sharp modern look.",
+    isSale: true
+  },
+  {
+    id: 8, name: "Anarkali Floral Kurti", cat: "women", sub: "Pastel Pink · Women's",
+    tag: "New", tagClass: "new",
+    images: [
+      "https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80",
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&q=80",
+      "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=500&q=80"
+    ],
+    price: 899, mrp: 1499, discount: 40,
+    sizes: ["XS","S","M","L","XL","XXL"],
+    desc: "A graceful Anarkali floral kurti in soft pastel pink. Adorned with delicate floral prints and finished with subtle embroidery at the neckline. Ideal for festive lunches, casual outings and family events.",
+    isSale: false
+  },
+  {
+    id: 9, name: "Printed Kurta Suit Set", cat: "women", sub: "Beige Multiprint · Women's",
+    tag: "Bestseller", tagClass: "",
+    images: [
+      "https://i.ibb.co/SWNL3sc/Beige-and-Brown-Modern-Fashion-Style-Poster-1.png",
+      "https://images.unsplash.com/photo-1551303989-8d4a3f33e56c?w=500&q=80",
+      "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=500&q=80"
+    ],
+    price: 1199, mrp: 2499, discount: 52,
+    sizes: ["XS","S","M","L","XL"],
+    desc: "A tastefully printed kurta suit set in warm beige tones. Comes with matching dupatta and palazzo pants. Crafted from lightweight fabric for all-day comfort. A complete ethnic look ready right out of the box.",
+    isSale: true
+  },
+  {
+    id: 10, name: "Trendy Casual Shirt", cat: "men", sub: "Navy Stripe · Men's",
+    tag: "Trending", tagClass: "hot",
+    images: [
+      "https://i.ibb.co/LzsQ1jJd/Untitled-design.png",
+      "https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=500&q=80",
+      "https://images.unsplash.com/photo-1613394524767-1d1a7c2b46c0?w=500&q=80"
+    ],
+    price: 649, mrp: 1099, discount: 41,
+    sizes: ["S","M","L","XL","XXL"],
+    desc: "A stylish navy stripe casual shirt perfect for weekends and outings. Relaxed fit with a classic collar and chest pocket. Machine washable and easy to maintain — an everyday essential for the modern man.",
+    isSale: false
+  },
+  {
+    id: 11, name: "Sleepwear Lounge Set", cat: "women", sub: "Lavender Floral · Women's",
+    tag: "New", tagClass: "new",
+    images: [
+      "https://i.ibb.co/hRVmGpCb/Untitled-design-1.png",
+      "https://images.unsplash.com/photo-1616628188859-7a11abb6fcc9?w=500&q=80",
+      "https://images.unsplash.com/photo-1583744946564-b52ac1c389c8?w=500&q=80"
+    ],
+    price: 549, mrp: 999, discount: 45,
+    sizes: ["XS","S","M","L","XL"],
+    desc: "A dreamy lavender floral sleepwear lounge set made from ultra-soft cotton. Features a relaxed top and elasticized pants for maximum comfort. Perfect for lounging at home, sleeping or light morning errands.",
+    isSale: false
+  },
+  {
+    id: 12, name: "Kids Trending Fashion Set", cat: "kids", sub: "Bright Printed · Kids'",
+    tag: "Trending", tagClass: "hot",
+    images: [
+      "https://i.ibb.co/HLnJgPgZ/Kids-Fashion.png",
+      "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=500&q=80",
+      "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=500&q=80"
+    ],
+    price: 499, mrp: 899, discount: 44,
+    sizes: ["2-3Y","4-5Y","6-7Y","8-9Y"],
+    desc: "A fun and colourful fashion set for kids with vibrant prints and playful designs. Made from soft, durable fabric that kids love. Great for school days, playdates and casual family outings.",
+    isSale: false
+  },
+  {
+    id: 13, name: "Bags & Jewellery Combo", cat: "accessories", sub: "Gold Tone · Accessories",
+    tag: "Bestseller", tagClass: "",
+    images: [
+      "https://i.ibb.co/nMJ3JVxJ/Untitled-design-2.png",
+      "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&q=80",
+      "https://images.unsplash.com/photo-1516762689617-e1cffcef479d?w=500&q=80"
+    ],
+    price: 1099, mrp: 2499, discount: 56,
+    sizes: ["One Size"],
+    desc: "An elegant gold-tone bag and jewellery combo set, curated for ethnic occasions. The bag features gold zari work while the jewellery set includes earrings and a necklace. A perfect gifting option.",
+    isSale: true
+  },
+  {
+    id: 14, name: "Men's Ethnic Kurta Set", cat: "men", sub: "Off-White · Men's Festive",
+    tag: "New", tagClass: "new",
+    images: [
+      "https://images.unsplash.com/photo-1604030033107-c25f7e1fa98e?w=500&q=80",
+      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=500&q=80",
+      "https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?w=500&q=80"
+    ],
+    price: 1499, mrp: 2999, discount: 50,
+    sizes: ["S","M","L","XL","XXL"],
+    desc: "A premium off-white ethnic kurta set with intricate self-embroidery and a mandarin collar. Paired with matching churidar bottoms. Perfect for weddings, Eid, festivals and formal ethnic occasions.",
+    isSale: true
+  },
+  {
+    id: 15, name: "Georgette Saree", cat: "women", sub: "Deep Maroon · Women's Festive",
+    tag: "Sale", tagClass: "sale",
+    images: [
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&q=80",
+      "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500&q=80",
+      "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=500&q=80"
+    ],
+    price: 1799, mrp: 3999, discount: 55,
+    sizes: ["Free Size"],
+    desc: "A stunning deep maroon georgette saree with a rich zari border and a beautifully embroidered pallu. Pre-stitched and easy to drape. An ideal choice for weddings, receptions and festive celebrations.",
+    isSale: true
+  },
+  {
+    id: 16, name: "Lehenga Choli Set", cat: "women", sub: "Royal Pink · Women's Bridal",
+    tag: "New", tagClass: "new",
+    images: [
+      "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=500&q=80",
+      "https://images.unsplash.com/photo-1551303989-8d4a3f33e56c?w=500&q=80",
+      "https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80"
+    ],
+    price: 3499, mrp: 7999, discount: 56,
+    sizes: ["XS","S","M","L","XL","Custom"],
+    desc: "A breathtaking royal pink lehenga choli set adorned with mirror work, sequin embellishments and a flowy skirt. Includes a matching dupatta. Made for the modern bride who loves tradition with a contemporary twist.",
+    isSale: false
+  }
+];
 
-function loadProductsFromSheet() {
-  const grid = document.getElementById('prodGrid');
-  if (grid) grid.innerHTML = `
-    <div style="grid-column:1/-1;text-align:center;padding:80px 20px;">
-      <i class="fas fa-spinner fa-spin" style="font-size:36px;color:var(--primary);margin-bottom:16px;display:block;"></i>
-      <p style="font-size:13px;color:#888;">Loading products from Google Sheet...</p>
-    </div>`;
-
-  // Remove old script tag if exists
-  const old = document.getElementById('jsonp-loader');
-  if (old) old.remove();
-
-  // JSONP callback
-  window.__sheetCallback = function(data) {
-    if (!Array.isArray(data) || data.length === 0) {
-      if (grid) grid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><h3>No products yet</h3><p>Add products from the admin panel.</p></div>';
-      return;
-    }
-    products = data;
-    updateCatCounts();
-    renderGrid();
-    updateBadge();
-  };
-
-  const script = document.createElement('script');
-  script.id = 'jsonp-loader';
-  script.src = SHEET_API + '?callback=__sheetCallback&t=' + Date.now();
-  script.onerror = function() {
-    if (grid) grid.innerHTML = `
-      <div style="grid-column:1/-1;text-align:center;padding:80px 20px;">
-        <i class="fas fa-exclamation-circle" style="font-size:36px;color:var(--primary);margin-bottom:16px;display:block;"></i>
-        <h3 style="font-family:var(--font-head);font-size:20px;color:#555;margin-bottom:8px;">Failed to load products</h3>
-        <p style="font-size:13px;color:#aaa;margin-bottom:18px;">Could not connect to Google Sheet.</p>
-        <button onclick="loadProductsFromSheet()" style="background:var(--primary);color:#fff;padding:10px 24px;border:none;border-radius:4px;font-family:var(--font-head);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;cursor:pointer;">
-          <i class="fas fa-redo"></i> Retry
-        </button>
-      </div>`;
-  };
-  document.head.appendChild(script);
-}
-
-function updateCatCounts() {
-  const counts = { all: products.length, women:0, men:0, kids:0, accessories:0, sale:0 };
-  products.forEach(p => {
-    if (counts[p.cat] !== undefined) counts[p.cat]++;
-    if (p.isSale) counts.sale++;
-  });
-  Object.keys(counts).forEach(cat => {
-    const el = document.getElementById('cnt-' + cat);
-    if (el) el.textContent = counts[cat];
-  });
-}
 // ════════════════════════════════════════
 // RENDER ENGINE
 // ════════════════════════════════════════
@@ -1045,7 +1201,8 @@ function openMob() { document.getElementById('mobMenu').classList.add('open'); }
 function closeMob() { document.getElementById('mobMenu').classList.remove('open'); }
 
 // INIT
-loadProductsFromSheet();
+renderGrid();
+updateBadge();
 </script>
   <script>
   function toggleSearch() {
