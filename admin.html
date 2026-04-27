@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel - Mrithula Collection</title>
+  <title>Admin Panel – Mrithula Collection</title>
   <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -160,30 +160,15 @@
     .export-note { font-size:11px; color:var(--mid); margin-top:10px; line-height:1.7; background:var(--light); padding:12px 14px; border-radius:6px; border-left:3px solid var(--primary); }
 
     @media(max-width:900px) {
-  .panel-grid { grid-template-columns:1fr; }
-  .stats-row { grid-template-columns:repeat(2,1fr); }
-  .form-row, .form-row-3 { grid-template-columns:1fr; }
-}
-@media(max-width:600px) {
-  .prod-item { flex-wrap:wrap; gap:10px; }
-  .prod-info { min-width:0; flex:1 1 60%; }
-  .prod-price { flex:0 0 auto; }
-  .prod-actions { width:100%; display:flex; gap:8px; }
-  .btn-edit, .btn-delete { flex:1; justify-content:center; padding:10px; font-size:11px; }
-  .prod-thumb { width:50px; height:50px; }
-  .prod-name { font-size:13px; white-space:normal; }
-  .list-toolbar { flex-wrap:wrap; }
-  .tb-brand span.badge { display:none; }
-  .tb-btn span { display:none; }
-}
-@media(max-width:500px) {
-  .stats-row { grid-template-columns:1fr 1fr; }
-  .topbar { padding:0 16px; }
-  .content { padding:20px 14px; }
-  .stat-card { padding:16px; }
-  .stat-val { font-size:22px; }
-  .card-head { flex-wrap:wrap; gap:10px; }
-}
+      .panel-grid { grid-template-columns:1fr; }
+      .stats-row { grid-template-columns:repeat(2,1fr); }
+      .form-row, .form-row-3 { grid-template-columns:1fr; }
+    }
+    @media(max-width:500px) {
+      .stats-row { grid-template-columns:1fr 1fr; }
+      .topbar { padding:0 16px; }
+      .content { padding:20px 14px; }
+    }
   </style>
 </head>
 <body>
@@ -211,7 +196,6 @@
     </div>
     <div class="tb-right">
       <a href="products.html" target="_blank" class="tb-btn outline"><i class="fas fa-external-link-alt"></i> View Store</a>
-      <span id="syncStatus" style="font-size:11px;font-family:var(--font-head);font-weight:600;"></span>
       <button class="tb-btn danger" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
   </div>
@@ -414,7 +398,6 @@
   // ADMIN PASSWORD
   // ══════════════════════════════════════
   const ADMIN_PASSWORD = 'mrithula@admin';
-  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxBVJ6xIPVSutVAgaS8q2lLO4wS61A5FbNDbzj2a6zZTNWTIXy0HJnk5ZjjDvkpDvI/exec';
 
   function doAdminLogin() {
     const val = document.getElementById('adminPass').value;
@@ -422,7 +405,7 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminWrap').classList.add('show');
       localStorage.setItem('mc_admin_auth', '1');
-      renderAll();
+      fetchProductsFromSheet();
     } else {
       document.getElementById('loginErr').style.display = 'block';
       document.getElementById('adminPass').value = '';
@@ -443,57 +426,53 @@
   }
 
   // ══════════════════════════════════════
-  // DEFAULT PRODUCTS (from products.html)
+  // GOOGLE SHEET API (JSONP)
   // ══════════════════════════════════════
-  const defaultProducts = [
-    { id:1, name:"Embroidered Anarkali Kurta Pant", cat:"women", sub:"Royal Blue · Women's Ethnic", tag:"New", tagClass:"new", images:["https://i.ibb.co/6RyhK1C2/Mirthula-collection-set.jpg","https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80","https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&q=80"], price:1899, mrp:3999, discount:50, sizes:["XS","S","M","L","XL","XXL"], desc:"A beautifully embroidered Anarkali kurta pant set crafted from premium fabric. Perfect for festive occasions, family gatherings and celebrations.", isSale:true },
-    { id:2, name:"Co-ord Set", cat:"women", sub:"Cotton Blend Green Printed · Casual Wear", tag:"Bestseller", tagClass:"", images:["https://i.ibb.co/ZRvgyjjk/mirthula-collection-co-ord-set.jpg","https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&q=80","https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80"], price:699, mrp:1999, discount:65, sizes:["XS","S","M","L","XL"], desc:"A trendy V-neck co-ord set in a fresh green print. Made from breathable cotton blend fabric, ideal for daily wear and casual outings.", isSale:true },
-    { id:3, name:"Premium Formal Shirt", cat:"men", sub:"Sky Blue · Men's", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=500&q=80","https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=500&q=80","https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&q=80"], price:799, mrp:1299, discount:38, sizes:["S","M","L","XL","XXL"], desc:"A sharp sky blue formal shirt made from wrinkle-resistant fabric. Features a classic collar and regular fit that looks professional all day.", isSale:false },
-    { id:4, name:"Women's Sling Bag", cat:"accessories", sub:"Tan Brown · Accessories", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80","https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=80","https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=500&q=80"], price:699, mrp:1299, discount:46, sizes:["One Size"], desc:"A chic tan brown sling bag crafted from vegan leather. Adjustable strap, inner zipper pocket and magnetic snap closure.", isSale:false },
-    { id:5, name:"Kids Festive Kurta Set", cat:"kids", sub:"Multi Color · Kids'", tag:"Trending", tagClass:"hot", images:["https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=500&q=80","https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=500&q=80","https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=500&q=80"], price:599, mrp:999, discount:40, sizes:["2-3Y","4-5Y","6-7Y","8-9Y","10-11Y"], desc:"A vibrant festive kurta set for kids, perfect for Diwali, weddings and special occasions.", isSale:false },
-    { id:6, name:"Unisex Running Sneakers", cat:"footwear", sub:"White · Footwear", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80","https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&q=80","https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=500&q=80"], price:1299, mrp:2499, discount:48, sizes:["6","7","8","9","10","11"], desc:"Lightweight and responsive unisex running sneakers with breathable mesh upper and cushioned sole.", isSale:false },
-    { id:7, name:"Slim Fit Stretch Jeans", cat:"men", sub:"Dark Navy · Men's", tag:"Sale", tagClass:"sale", images:["https://images.unsplash.com/photo-1594938298603-c8148c4b4d05?w=500&q=80","https://images.unsplash.com/photo-1604176354204-9268737828e4?w=500&q=80","https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80"], price:999, mrp:1799, discount:44, sizes:["28","30","32","34","36","38"], desc:"Premium slim fit jeans in a deep navy wash. Made from 4-way stretch denim for maximum comfort.", isSale:true },
-    { id:8, name:"Anarkali Floral Kurti", cat:"women", sub:"Pastel Pink · Women's", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80","https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&q=80","https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=500&q=80"], price:899, mrp:1499, discount:40, sizes:["XS","S","M","L","XL","XXL"], desc:"A graceful Anarkali floral kurti in soft pastel pink with delicate floral prints.", isSale:false },
-    { id:9, name:"Printed Kurta Suit Set", cat:"women", sub:"Beige Multiprint · Women's", tag:"Bestseller", tagClass:"", images:["https://i.ibb.co/SWNL3sc/Beige-and-Brown-Modern-Fashion-Style-Poster-1.png","https://images.unsplash.com/photo-1551303989-8d4a3f33e56c?w=500&q=80","https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=500&q=80"], price:1199, mrp:2499, discount:52, sizes:["XS","S","M","L","XL"], desc:"A tastefully printed kurta suit set in warm beige tones with matching dupatta and palazzo pants.", isSale:true },
-    { id:10, name:"Trendy Casual Shirt", cat:"men", sub:"Navy Stripe · Men's", tag:"Trending", tagClass:"hot", images:["https://i.ibb.co/LzsQ1jJd/Untitled-design.png","https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=500&q=80","https://images.unsplash.com/photo-1613394524767-1d1a7c2b46c0?w=500&q=80"], price:649, mrp:1099, discount:41, sizes:["S","M","L","XL","XXL"], desc:"A stylish navy stripe casual shirt perfect for weekends and outings.", isSale:false },
-    { id:11, name:"Sleepwear Lounge Set", cat:"women", sub:"Lavender Floral · Women's", tag:"New", tagClass:"new", images:["https://i.ibb.co/hRVmGpCb/Untitled-design-1.png","https://images.unsplash.com/photo-1616628188859-7a11abb6fcc9?w=500&q=80","https://images.unsplash.com/photo-1583744946564-b52ac1c389c8?w=500&q=80"], price:549, mrp:999, discount:45, sizes:["XS","S","M","L","XL"], desc:"A dreamy lavender floral sleepwear lounge set made from ultra-soft cotton.", isSale:false },
-    { id:12, name:"Kids Trending Fashion Set", cat:"kids", sub:"Bright Printed · Kids'", tag:"Trending", tagClass:"hot", images:["https://i.ibb.co/HLnJgPgZ/Kids-Fashion.png","https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=500&q=80","https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=500&q=80"], price:499, mrp:899, discount:44, sizes:["2-3Y","4-5Y","6-7Y","8-9Y"], desc:"A fun and colourful fashion set for kids with vibrant prints and playful designs.", isSale:false },
-    { id:13, name:"Bags & Jewellery Combo", cat:"accessories", sub:"Gold Tone · Accessories", tag:"Bestseller", tagClass:"", images:["https://i.ibb.co/nMJ3JVxJ/Untitled-design-2.png","https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&q=80","https://images.unsplash.com/photo-1516762689617-e1cffcef479d?w=500&q=80"], price:1099, mrp:2499, discount:56, sizes:["One Size"], desc:"An elegant gold-tone bag and jewellery combo set, curated for ethnic occasions.", isSale:true },
-    { id:14, name:"Men's Ethnic Kurta Set", cat:"men", sub:"Off-White · Men's Festive", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1604030033107-c25f7e1fa98e?w=500&q=80","https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=500&q=80","https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?w=500&q=80"], price:1499, mrp:2999, discount:50, sizes:["S","M","L","XL","XXL"], desc:"A premium off-white ethnic kurta set with intricate self-embroidery and mandarin collar.", isSale:true },
-    { id:15, name:"Georgette Saree", cat:"women", sub:"Deep Maroon · Women's Festive", tag:"Sale", tagClass:"sale", images:["https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&q=80","https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500&q=80","https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=500&q=80"], price:1799, mrp:3999, discount:55, sizes:["Free Size"], desc:"A stunning deep maroon georgette saree with rich zari border and embroidered pallu.", isSale:true },
-    { id:16, name:"Lehenga Choli Set", cat:"women", sub:"Royal Pink · Women's Bridal", tag:"New", tagClass:"new", images:["https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=500&q=80","https://images.unsplash.com/photo-1551303989-8d4a3f33e56c?w=500&q=80","https://images.unsplash.com/photo-1614676471928-2ed0ad1061a4?w=500&q=80"], price:3499, mrp:7999, discount:56, sizes:["XS","S","M","L","XL","Custom"], desc:"A breathtaking royal pink lehenga choli set adorned with mirror work and sequin embellishments.", isSale:false }
-  ];
+  const SHEET_API = 'https://script.google.com/macros/s/AKfycbz1dFMHz5-r588bpWHNLyDUDrG62baVXmezpbfN10UeueVofVVfMNN9N5PBhtRlV-Wp/exec';
+  let _products = [];
 
-  // ══════════════════════════════════════
-  // STORAGE
-  // ══════════════════════════════════════
-  function getProducts() {
-    try {
-      const stored = localStorage.getItem('mc_admin_products');
-      return stored ? JSON.parse(stored) : [...defaultProducts];
-    } catch(e) { return [...defaultProducts]; }
-  }
-  function saveProducts(arr) {
-    localStorage.setItem('mc_admin_products', JSON.stringify(arr));
-    syncToSheet(arr);
-  }
-
-  function syncToSheet(products) {
-    const syncBtn = document.getElementById('syncStatus');
-    if (syncBtn) { syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...'; syncBtn.style.color = 'var(--accent)'; }
-    fetch(SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'save_all', products })
-    }).then(() => {
-      if (syncBtn) { syncBtn.innerHTML = '<i class="fas fa-check-circle"></i> Synced to all devices'; syncBtn.style.color = 'var(--accent2)'; }
-      setTimeout(() => { if (syncBtn) syncBtn.innerHTML = ''; }, 3000);
-    }).catch(() => {
-      if (syncBtn) { syncBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Sync failed — saved locally'; syncBtn.style.color = 'var(--primary-light)'; }
-    });
-  }
+  function getProducts() { return _products; }
   function nextId(arr) { return arr.length ? Math.max(...arr.map(p=>p.id)) + 1 : 1; }
+
+  function fetchProductsFromSheet() {
+    document.getElementById('prodList').innerHTML =
+      `<div class="empty-list"><i class="fas fa-spinner fa-spin" style="color:var(--primary);font-size:30px;"></i><p style="margin-top:12px;color:#888;">Loading from Google Sheet...</p></div>`;
+
+    const old = document.getElementById('admin-jsonp');
+    if (old) old.remove();
+
+    window.__adminSheetCb = function(data) {
+      _products = Array.isArray(data) ? data : [];
+      renderAll();
+    };
+
+    const script = document.createElement('script');
+    script.id = 'admin-jsonp';
+    script.src = SHEET_API + '?callback=__adminSheetCb&t=' + Date.now();
+    script.onerror = function() {
+      document.getElementById('prodList').innerHTML =
+        `<div class="empty-list"><i class="fas fa-exclamation-circle" style="color:var(--primary);font-size:30px;"></i>
+         <p style="margin-top:12px;">Failed to load from Google Sheet.</p>
+         <button onclick="fetchProductsFromSheet()" style="margin-top:10px;background:var(--primary);color:#fff;padding:8px 18px;border:none;border-radius:5px;font-family:var(--font-head);font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">Retry</button></div>`;
+    };
+    document.head.appendChild(script);
+  }
+
+  async function saveProductsToSheet(arr, successMsg) {
+    try {
+      await fetch(SHEET_API, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ action: 'save_all', products: arr })
+      });
+      _products = arr;
+      renderAll();
+      showToast('success', successMsg || 'Saved! Refreshing from Google Sheet...');
+      setTimeout(() => fetchProductsFromSheet(), 1500);
+    } catch(err) {
+      showToast('error', 'Failed to save. Please try again.');
+    }
+  }
 
   // ══════════════════════════════════════
   // RENDER
@@ -524,12 +503,12 @@
     const tagMap = { new:'tag-new', sale:'tag-sale', hot:'tag-hot', '':'tag-bs' };
     list.innerHTML = filtered.map(p => `
       <div class="prod-item" id="pi-${p.id}">
-        <img class="prod-thumb" src="${Array.isArray(p.images) ? p.images[0] : JSON.parse(p.images||'[]')[0]}"
+        <img class="prod-thumb" src="${p.images[0]}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/60x60?text=IMG'"/>
         <div class="prod-info">
           <div class="prod-name">${p.name} &nbsp;<span class="tag-badge ${tagMap[p.tagClass]||'tag-bs'}">${p.tag}</span></div>
           <div class="prod-meta">
             <span><i class="fas fa-folder" style="font-size:9px;"></i> ${p.cat}</span>
-            <span><i class="fas fa-ruler" style="font-size:9px;"></i> ${(Array.isArray(p.sizes) ? p.sizes : JSON.parse(p.sizes||'[]')).join(', ')}</span>
+            <span><i class="fas fa-ruler" style="font-size:9px;"></i> ${p.sizes.join(', ')}</span>
             ${p.isSale ? '<span style="color:var(--green);"><i class="fas fa-tag" style="font-size:9px;"></i> On Sale</span>' : ''}
           </div>
         </div>
@@ -626,7 +605,7 @@
   // ══════════════════════════════════════
   // SAVE PRODUCT
   // ══════════════════════════════════════
-  function saveProduct() {
+  async function saveProduct() {
     const name = document.getElementById('fName').value.trim();
     const price = parseFloat(document.getElementById('fPrice').value);
     const mrp = parseFloat(document.getElementById('fMrp').value);
@@ -671,7 +650,7 @@
       showToast('success', `"${name}" added successfully!`);
     }
 
-    saveProducts(products);
+    
     resetForm();
     renderAll();
     document.getElementById('prodList').scrollIntoView({ behavior:'smooth' });
@@ -724,9 +703,9 @@
     deleteTargetId = id;
     document.getElementById('confirmSub').textContent = `Are you sure you want to delete "${name}"? This cannot be undone.`;
     document.getElementById('confirmOv').classList.add('open');
-    document.getElementById('confirmOkBtn').onclick = () => {
+    document.getElementById('confirmOkBtn').onclick = async () => {
       const products = getProducts().filter(p => p.id !== deleteTargetId);
-      saveProducts(products);
+      
       closeConfirm();
       renderAll();
       showToast('success', 'Product deleted successfully!');
@@ -763,7 +742,7 @@
   }
 
   // Init
-  if (localStorage.getItem('mc_admin_auth') === '1') renderAll();
+  if (localStorage.getItem('mc_admin_auth') === '1') fetchProductsFromSheet();
 </script>
 </body>
 </html>
