@@ -132,13 +132,14 @@
 
     /* image carousel container */
     .pimg {
-      position: relative; overflow: hidden; aspect-ratio: 3/4;
-      background: var(--light); margin-bottom: 14px; border-radius: 6px;
-    }
-    /* image slides */
-    .img-slides { display: flex; height: 100%; transition: transform .4s ease; }
-    .img-slides img { min-width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; }
-
+  position: relative; overflow: hidden;
+  padding-bottom: 133%;
+  height: 0;
+  background: var(--light); margin-bottom: 14px; border-radius: 6px;
+}
+/* image slides */
+.img-slides { display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform .4s ease; }
+.img-slides img { min-width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; }
     /* thumbnail dots */
     .img-dots {
       position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
