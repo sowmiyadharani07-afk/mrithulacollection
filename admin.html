@@ -211,6 +211,7 @@
     </div>
     <div class="tb-right">
       <a href="products.html" target="_blank" class="tb-btn outline"><i class="fas fa-external-link-alt"></i> View Store</a>
+      <span id="syncStatus" style="font-size:11px;font-family:var(--font-head);font-weight:600;"></span>
       <button class="tb-btn danger" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
   </div>
@@ -413,6 +414,7 @@
   // ADMIN PASSWORD
   // ══════════════════════════════════════
   const ADMIN_PASSWORD = 'mrithula@admin';
+  const SHEET_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
 
   function doAdminLogin() {
     const val = document.getElementById('adminPass').value;
@@ -471,7 +473,28 @@
       return stored ? JSON.parse(stored) : [...defaultProducts];
     } catch(e) { return [...defaultProducts]; }
   }
-  function saveProducts(arr) { localStorage.setItem('mc_admin_products', JSON.stringify(arr)); }
+  function saveProducts(arr) {
+  // Save to localStorage (instant)
+  localStorage.setItem('mc_admin_products', JSON.stringify(arr));
+  // Sync to Google Sheet (all devices)
+  syncToSheet(arr);
+}
+
+function syncToSheet(products) {
+  const syncBtn = document.getElementById('syncStatus');
+  if (syncBtn) { syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...'; syncBtn.style.color = 'var(--accent)'; }
+  fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'save_all', products })
+  }).then(() => {
+    if (syncBtn) { syncBtn.innerHTML = '<i class="fas fa-check-circle"></i> Synced to all devices'; syncBtn.style.color = 'var(--accent2)'; }
+    setTimeout(() => { if (syncBtn) syncBtn.innerHTML = ''; }, 3000);
+  }).catch(() => {
+    if (syncBtn) { syncBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Sync failed — saved locally'; syncBtn.style.color = 'var(--primary-light)'; }
+  });
+}
   function nextId(arr) { return arr.length ? Math.max(...arr.map(p=>p.id)) + 1 : 1; }
 
   // ══════════════════════════════════════
