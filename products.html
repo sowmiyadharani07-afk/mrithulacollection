@@ -1229,24 +1229,6 @@ function loadProducts() {
 }
 
 loadProducts();
-
-  // Then fetch latest from Google Sheet in background
-  fetch(SHEET_URL)
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.length) {
-        products.splice(0, products.length, ...data);
-        localStorage.setItem('mc_admin_products', JSON.stringify(data));
-        renderGrid();
-      }
-    })
-    .catch(() => {
-      // Sheet fetch failed — already rendered with local data above
-      console.log('Using local product data');
-    });
-}
-
-loadProducts();
 </script>
   <script>
   function toggleSearch() {
