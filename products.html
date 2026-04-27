@@ -1200,10 +1200,11 @@ window.addEventListener('scroll', () => {
 function openMob() { document.getElementById('mobMenu').classList.add('open'); }
 function closeMob() { document.getElementById('mobMenu').classList.remove('open'); }
 
-// INIT — Load from Google Sheet (all devices sync)
+// INIT — Load products (Sheet → localStorage → default)
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxBVJ6xIPVSutVAgaS8q2lLO4wS61A5FbNDbzj2a6zZTNWTIXy0HJnk5ZjjDvkpDvI/exec';
 
 function loadProducts() {
+  // Step 1: Load local or default first (instant render)
   const local = localStorage.getItem('mc_admin_products');
   if (local) {
     try {
@@ -1214,17 +1215,21 @@ function loadProducts() {
   renderGrid();
   updateBadge();
 
+  // Step 2: Try fetching from Google Sheet in background
   fetch(SHEET_URL)
     .then(res => res.json())
     .then(data => {
-      if (data && data.length) {
+      // Only update if sheet has valid data with at least 1 product
+      if (data && Array.isArray(data) && data.length > 0 && data[0].name) {
         products.splice(0, products.length, ...data);
         localStorage.setItem('mc_admin_products', JSON.stringify(data));
         renderGrid();
       }
+      // If sheet is empty — keep showing local/default products
     })
     .catch(() => {
-      console.log('Using local product data');
+      // Network error — keep showing local/default products
+      console.log('Using local/default product data');
     });
 }
 
