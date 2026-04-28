@@ -420,10 +420,19 @@
     if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') doAdminLogin();
   });
   // Auto-login if session exists
+if (localStorage.getItem('mc_admin_auth') === '1') {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminWrap').classList.add('show');
+}
+
+// ══════════════════════════════════════
+// INIT — DO NOT MOVE THIS UP
+// ══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
   if (localStorage.getItem('mc_admin_auth') === '1') {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminWrap').classList.add('show');
+    renderAll();
   }
+});
 
   // ══════════════════════════════════════
   // DEFAULT PRODUCTS (from products.html)
