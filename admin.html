@@ -423,6 +423,7 @@
   if (localStorage.getItem('mc_admin_auth') === '1') {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminWrap').classList.add('show');
+    setTimeout(() => renderAll(), 100);
   }
 
   // ══════════════════════════════════════
@@ -726,8 +727,7 @@
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  // Init
-  if (localStorage.getItem('mc_admin_auth') === '1') renderAll();
+  // Init — handled above on page load
 </script>
 </body>
 </html>
