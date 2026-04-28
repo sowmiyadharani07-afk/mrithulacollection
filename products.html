@@ -623,6 +623,8 @@
 </div>
 
 <script>
+const JSONBIN_ID = '69f05f86aaba882197479ab3';
+const JSONBIN_KEY = '$2a$10$Vt/JT5jRJMnVX85ETZjNH.Cf4u9spFqVtQXDVDzBaaxdz7h6Qs9Km';
 // ════════════════════════════════════════
 // PRODUCT DATA
 // ════════════════════════════════════════
@@ -1201,8 +1203,22 @@ function openMob() { document.getElementById('mobMenu').classList.add('open'); }
 function closeMob() { document.getElementById('mobMenu').classList.remove('open'); }
 
 // INIT
-renderGrid();
-updateBadge();
+fetch('https://api.jsonbin.io/v3/b/' + JSONBIN_ID + '/latest', {
+  headers: { 'X-Master-Key': JSONBIN_KEY }
+})
+.then(r => r.json())
+.then(data => {
+  if (data.record && Array.isArray(data.record) && data.record.length > 0 && data.record[0].id) {
+    products.length = 0;
+    data.record.forEach(p => products.push(p));
+  }
+  renderGrid();
+  updateBadge();
+})
+.catch(() => {
+  renderGrid();
+  updateBadge();
+});
 </script>
   <script>
   function toggleSearch() {
