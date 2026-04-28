@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="prod-name">${p.name} &nbsp;<span class="tag-badge ${tagMap[p.tagClass]||'tag-bs'}">${p.tag}</span></div>
           <div class="prod-meta">
             <span><i class="fas fa-folder" style="font-size:9px;"></i> ${p.cat}</span>
-            <span><i class="fas fa-ruler" style="font-size:9px;"></i> ${p.sizes.join(', ')}</span>
+            <span><i class="fas fa-ruler" style="font-size:9px;"></i> ${(p.sizes || []).join(', ')}</span>
             ${p.isSale ? '<span style="color:var(--green);"><i class="fas fa-tag" style="font-size:9px;"></i> On Sale</span>' : ''}
           </div>
         </div>
