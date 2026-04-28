@@ -394,6 +394,8 @@
 </div>
 
 <script>
+  const JSONBIN_ID = '69f05f86aaba882197479ab3';
+  const JSONBIN_KEY = '$2a$10$Vt/JT5jRJMnVX85ETZjNH.Cf4u9spFqVtQXDVDzBaaxdz7h6Qs9Km';
   // ══════════════════════════════════════
   // ADMIN PASSWORD
   // ══════════════════════════════════════
@@ -473,7 +475,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }));
   } catch(e) { return [...defaultProducts]; }
 }
-  function saveProducts(arr) { localStorage.setItem('mc_admin_products', JSON.stringify(arr)); }
+  function saveProducts(arr) {
+  localStorage.setItem('mc_admin_products', JSON.stringify(arr));
+  fetch('https://api.jsonbin.io/v3/b/' + JSONBIN_ID, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
+    body: JSON.stringify(arr)
+  });
+}
   function nextId(arr) { return arr.length ? Math.max(...arr.map(p=>p.id)) + 1 : 1; }
 
   // ══════════════════════════════════════
