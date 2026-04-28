@@ -460,11 +460,19 @@ document.addEventListener('DOMContentLoaded', function() {
   // STORAGE
   // ══════════════════════════════════════
   function getProducts() {
-    try {
-      const stored = localStorage.getItem('mc_admin_products');
-      return stored ? JSON.parse(stored) : [...defaultProducts];
-    } catch(e) { return [...defaultProducts]; }
-  }
+  try {
+    const stored = localStorage.getItem('mc_admin_products');
+    const arr = stored ? JSON.parse(stored) : [...defaultProducts];
+    return arr.map(p => ({
+      ...p,
+      price: Number(p.price) || 0,
+      mrp: Number(p.mrp) || 0,
+      discount: Number(p.discount) || 0,
+      sizes: Array.isArray(p.sizes) ? p.sizes : [],
+      images: Array.isArray(p.images) ? p.images : []
+    }));
+  } catch(e) { return [...defaultProducts]; }
+}
   function saveProducts(arr) { localStorage.setItem('mc_admin_products', JSON.stringify(arr)); }
   function nextId(arr) { return arr.length ? Math.max(...arr.map(p=>p.id)) + 1 : 1; }
 
