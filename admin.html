@@ -353,9 +353,29 @@
         </div>
         <div class="card-body" style="padding:16px;">
           <div class="list-toolbar">
-            <input class="list-search" type="text" placeholder="Search products..." oninput="filterList(this.value)" id="listSearch"/>
-            <span class="list-count" id="listCount">0 products</span>
-          </div>
+  <input class="list-search" type="text" placeholder="Search products..." oninput="filterList(this.value)" id="listSearch"/>
+  <select class="sort-sel" id="filterCat" onchange="filterList('')" style="padding:9px 12px;font-size:11px;border:2px solid #e0e4f0;border-radius:6px;outline:none;background:#f0f4ff;cursor:pointer;">
+    <option value="">All Categories</option>
+    <option value="women">Women's</option>
+    <option value="men">Men's</option>
+    <option value="kids">Kids'</option>
+    <option value="accessories">Accessories</option>
+    <option value="footwear">Footwear</option>
+  </select>
+  <select class="sort-sel" id="filterTag" onchange="filterList('')" style="padding:9px 12px;font-size:11px;border:2px solid #e0e4f0;border-radius:6px;outline:none;background:#f0f4ff;cursor:pointer;">
+    <option value="">All Tags</option>
+    <option value="New">New</option>
+    <option value="Bestseller">Bestseller</option>
+    <option value="Trending">Trending</option>
+    <option value="Sale">Sale</option>
+  </select>
+  <select class="sort-sel" id="filterSale" onchange="filterList('')" style="padding:9px 12px;font-size:11px;border:2px solid #e0e4f0;border-radius:6px;outline:none;background:#f0f4ff;cursor:pointer;">
+    <option value="">All Items</option>
+    <option value="sale">On Sale</option>
+    <option value="nosale">Not on Sale</option>
+  </select>
+  <span class="list-count" id="listCount">0 products</span>
+</div>
           <div class="prod-list" id="prodList"></div>
         </div>
       </div>
@@ -532,7 +552,47 @@ document.addEventListener('DOMContentLoaded', function() {
     `).join('');
   }
 
-  function filterList(q) { renderList(q); }
+  function filterList(q) {
+  const query = (document.getElementById('listSearch').value || '').toLowerCase().trim();
+  const cat = document.getElementById('filterCat') ? document.getElementById('filterCat').value : '';
+  const tag = document.getElementById('filterTag') ? document.getElementById('filterTag').value : '';
+  const sale = document.getElementById('filterSale') ? document.getElementById('filterSale').value : '';
+
+  const all = getProducts();
+  const filtered = all.filter(p => {
+    const matchQ = !query || p.name.toLowerCase().includes(query) || p.cat.toLowerCase().includes(query) || p.sub.toLowerCase().includes(query);
+    const matchCat = !cat || p.cat === cat;
+    const matchTag = !tag || p.tag === tag;
+    const matchSale = !sale || (sale === 'sale' ? p.isSale : !p.isSale);
+    return matchQ && matchCat && matchTag && matchSale;
+  });
+
+  document.getElementById('listCount').textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
+  const list = document.getElementById('prodList');
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-list"><i class="fas fa-search"></i><p>No products found</p></div>`;
+    return;
+  }
+  const tagMap = { new:'tag-new', sale:'tag-sale', hot:'tag-hot', '':'tag-bs' };
+  list.innerHTML = filtered.map(p => `
+    <div class="prod-item" id="pi-${p.id}">
+      <img class="prod-thumb" src="${p.images[0]}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/60x60?text=IMG'"/>
+      <div class="prod-info">
+        <div class="prod-name">${p.name} &nbsp;<span class="tag-badge ${tagMap[p.tagClass] || 'tag-bs'}">${p.tag || ''}</span></div>
+        <div class="prod-meta">
+          <span><i class="fas fa-folder" style="font-size:9px;"></i> ${p.cat}</span>
+          <span><i class="fas fa-ruler" style="font-size:9px;"></i> ${(p.sizes || []).join(', ')}</span>
+          ${p.isSale ? '<span style="color:var(--green);"><i class="fas fa-tag" style="font-size:9px;"></i> On Sale</span>' : ''}
+        </div>
+      </div>
+      <div class="prod-price">₹${(Number(p.price) || 0).toLocaleString('en-IN')}</div>
+      <div class="prod-actions">
+        <button class="btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i> Edit</button>
+        <button class="btn-delete" onclick="confirmDelete(${p.id},'${p.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i> Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
 
   // ══════════════════════════════════════
   // FORM HELPERS
