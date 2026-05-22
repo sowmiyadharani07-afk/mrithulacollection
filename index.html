@@ -146,6 +146,9 @@
       justify-content:center; transition:all .3s; font-size:14px; border-radius:3px;
     }
     .sprev { left:36px; } .snext { right:36px; }
+    /* Hide slider arrows on desktop & tablet */
+  .sprev, .snext { display: none !important; }
+}
     .sprev:hover, .snext:hover { border-color:var(--primary); color:var(--primary-light); background:rgba(230,57,70,.15); }
     .sdots { position:absolute; bottom:36px; left:100px; z-index:10; display:flex; gap:10px; }
     .sdot { width:20px; height:2px; background:rgba(255,255,255,.3); transition:all .3s; cursor:pointer; border-radius:2px; }
